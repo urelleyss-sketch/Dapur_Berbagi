@@ -1,0 +1,4152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DapurBerbagi - Platform Anti Limbah Makanan Rumah Tangga</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --accent-main: #ec4899;      /* pink-500 */
+      --accent-hover: #db2777;     /* pink-600 */
+      --accent-soft: #fdf2f8;      /* pink-50 */
+      --accent-soft-hover: #fce7f3;/* pink-100 */
+      --accent-border: #fbcfe8;    /* pink-200 */
+      --accent-text: #be185d;      /* pink-700 */
+    }
+    .theme-btn-main {
+      background-color: var(--accent-main) !important;
+      color: #ffffff !important;
+    }
+    .theme-btn-main:hover:not(:disabled) {
+      background-color: var(--accent-hover) !important;
+    }
+    .theme-btn-soft {
+      background-color: var(--accent-soft) !important;
+      color: var(--accent-text) !important;
+      border-color: var(--accent-border) !important;
+    }
+    .theme-btn-soft:hover {
+      background-color: var(--accent-soft-hover) !important;
+    }
+    .theme-text {
+      color: var(--accent-text) !important;
+    }
+    .theme-badge-bg {
+      background-color: var(--accent-main) !important;
+      color: #ffffff !important;
+    }
+    .theme-soft-bg {
+      background-color: var(--accent-soft) !important;
+    }
+    .theme-border {
+      border-color: var(--accent-border) !important;
+    }
+    /* Memastikan ukuran tombol di HP tetap konsisten dan nyaman disentuh */
+    button, .tab-btn {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    /* Animasi transisi halus antar halaman & indikator Bottom Navigation Bar */
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .tab-view-animate {
+      animation: tabFadeIn 0.25s ease-out;
+    }
+    .bottom-nav-item {
+      color: #64756C;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bottom-nav-item:hover {
+      color: var(--accent-text);
+    }
+    .bottom-nav-item.active {
+      color: var(--accent-text) !important;
+    }
+    .bottom-nav-item.active .nav-icon-wrap {
+      background-color: var(--accent-soft);
+      color: var(--accent-main);
+      transform: translateY(-2px) scale(1.06);
+    }
+    .bottom-nav-item.active .nav-active-pill {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    .nav-active-pill {
+      background-color: var(--accent-main);
+      opacity: 0;
+      transform: scaleX(0.3);
+      transition: all 0.22s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#FAF7F2] text-[#2C3E35] font-sans pb-28 selection:bg-pink-500 selection:text-white overflow-x-hidden">
+
+  <!-- Custom Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-24 right-5 left-5 sm:left-auto z-50 max-w-sm bg-[#2C3E35] text-white px-4 py-3 rounded-2xl shadow-xl items-center gap-3 animate-bounce">
+    <i class="fa-solid fa-circle-check text-pink-400 text-lg shrink-0"></i>
+    <p id="toast-message" class="text-sm font-medium"></p>
+  </div>
+
+  <!-- --- AUTH SPLASH SCREEN: HALAMAN LOGIN WAJIB PERTAMA KALI --- -->
+  <div id="auth-splash-screen" class="fixed inset-0 z-50 bg-[#FAF7F2] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="max-w-md w-full bg-white rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-[#E6DFD3] space-y-5 my-auto">
+      <div class="text-center space-y-2">
+        <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#4A6B5D] to-[#3B574B] text-white flex items-center justify-center mx-auto shadow-lg">
+          <i class="fa-solid fa-leaf text-3xl"></i>
+        </div>
+        <span class="inline-block px-3 py-1 rounded-full bg-[#E8EFEA] text-[#4A6B5D] text-xs font-extrabold tracking-wide">
+          Komunitas Anti-Limbah Makanan
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-[#2C3E35] tracking-tight">Masuk ke DapurBerbagi</h1>
+        <p class="text-xs sm:text-sm text-[#64756C] leading-relaxed">
+          Platform digital warga untuk menyelamatkan bahan pangan berlebih, menghemat belanja dapur, dan memberdayakan UMKM lokal.
+        </p>
+      </div>
+
+      <!-- Penjelasan Ringkas Kegunaan Web (Tentang DapurBerbagi) -->
+      <div class="bg-[#FAF7F2] border border-[#E6DFD3] rounded-2xl p-3.5 space-y-2 text-left">
+        <p class="text-xs font-extrabold text-[#2C3E35] flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-[#4A6B5D]"></i>
+          <span>Tentang DapurBerbagi & Kegunaannya:</span>
+        </p>
+        <ul class="space-y-1.5 text-[11px] sm:text-xs text-[#4A5D53]">
+          <li class="flex items-start gap-2">
+            <span class="w-4 h-4 rounded-full bg-[#4A6B5D] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+            <span><strong>Berbagi Bahan Pangan Tetangga:</strong> Salurkan bahan makanan berlebih satu wilayah agar tidak terbuang sia-sia.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="w-4 h-4 rounded-full bg-[#4A6B5D] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+            <span><strong>Catat Stok Kulkas & Ide Resep:</strong> Pantau kesegaran bahan kulkas dan temukan resep masakan rumahan hemat.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="w-4 h-4 rounded-full bg-[#4A6B5D] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+            <span><strong>Tukar Poin Voucher UMKM:</strong> Kumpulkan poin penyelamatan pangan untuk ditukar voucher belanja di warung lokal.</span>
+          </li>
+        </ul>
+      </div>
+
+      <form onsubmit="handleSplashLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nama Lengkap / Panggilan Warga <span class="text-rose-500">*</span></label>
+          <input
+            type="text"
+            id="splash-name"
+            required
+            placeholder="Contoh: Ibu Siti Aminah"
+            class="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nomor WhatsApp Aktif <span class="text-rose-500">*</span></label>
+          <input
+            type="tel"
+            id="splash-phone"
+            required
+            placeholder="Contoh: 081234567890"
+            class="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kabupaten / Kota <span class="text-rose-500">*</span></label>
+            <select
+              id="splash-kabupaten-select"
+              required
+              onchange="handleRegionSelectChange('splash', 'kabupaten')"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+            >
+              <option value="">-- Pilih Kabupaten / Kota --</option>
+            </select>
+            <input
+              type="text"
+              id="splash-kabupaten-manual"
+              placeholder="Ketik nama Kabupaten / Kota..."
+              class="hidden mt-2 w-full px-3.5 py-2 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kecamatan <span class="text-rose-500">*</span></label>
+            <select
+              id="splash-kecamatan-select"
+              required
+              disabled
+              onchange="handleRegionSelectChange('splash', 'kecamatan')"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D] disabled:opacity-60"
+            >
+              <option value="">-- Pilih Kecamatan --</option>
+            </select>
+            <input
+              type="text"
+              id="splash-kecamatan-manual"
+              placeholder="Ketik nama Kecamatan..."
+              class="hidden mt-2 w-full px-3.5 py-2 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Desa / Kelurahan <span class="text-rose-500">*</span></label>
+            <select
+              id="splash-desa-select"
+              required
+              disabled
+              onchange="handleRegionSelectChange('splash', 'desa')"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D] disabled:opacity-60"
+            >
+              <option value="">-- Pilih Desa / Kelurahan --</option>
+            </select>
+            <input
+              type="text"
+              id="splash-desa-manual"
+              placeholder="Ketik nama Desa / Kelurahan..."
+              class="hidden mt-2 w-full px-3.5 py-2 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">RT / RW <span class="text-rose-500">*</span></label>
+            <input
+              type="text"
+              id="splash-rtrw"
+              required
+              placeholder="Contoh: RT 02 / RW 05"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="theme-btn-main w-full py-3.5 rounded-2xl font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Masuk ke DapurBerbagi</span>
+        </button>
+      </form>
+
+      <div class="pt-4 border-t border-[#EFE9DD] flex flex-col items-center gap-2 text-center">
+        <p class="text-[11px] text-[#7A8B82]">
+          Dapur Hemat • Tetangga Dekat • Bumi Sehat
+        </p>
+        <button
+          type="button"
+          onclick="openMitraLoginModal()"
+          class="text-[11px] font-bold text-[#4A6B5D] hover:underline py-1 px-2 min-h-0 cursor-pointer flex items-center gap-1.5"
+        >
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Portal Mitra UMKM & Admin Kelurahan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- HEADER & HERO DASHBOARD --- -->
+  <header class="bg-gradient-to-br from-[#4A6B5D] via-[#5B7F70] to-[#3B574B] text-white rounded-b-[2rem] shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-8">
+      <!-- Banner Mode Mitra Aktif (Hanya muncul saat login sebagai Mitra UMKM / Kelurahan) -->
+      <div id="mitra-mode-bar" class="hidden mb-4 bg-amber-400/20 border border-amber-300/40 backdrop-blur-md px-4 py-2.5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-100">
+          <i class="fa-solid fa-shield-halved text-amber-300"></i>
+          <span>Mode Aktif: Portal Mitra UMKM & Admin Kelurahan</span>
+        </div>
+        <button
+          onclick="exitMitraMode()"
+          class="bg-white text-[#2C3E35] hover:bg-amber-50 px-3.5 py-1.5 min-h-0 rounded-xl text-xs font-extrabold shadow-xs flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-center"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket text-rose-600"></i>
+          Keluar Portal Mitra
+        </button>
+      </div>
+
+      <!-- Top Bar: Logo & Gamification Badge -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/15">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-[#FAF7F2] text-[#4A6B5D] flex items-center justify-center shadow-md shrink-0">
+            <i class="fa-solid fa-leaf text-2xl"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-extrabold tracking-tight flex flex-wrap items-center gap-2">
+              DapurBerbagi
+              <span id="header-region-badge" class="theme-badge-bg text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                Wilayah Belum Diatur
+              </span>
+            </h1>
+            <p class="text-sm text-[#E4EDE8]">
+              Halo, <strong id="header-greeting-name" class="text-white">Warga</strong>! Dapur Hemat, Tetangga Dekat, Bumi Sehat
+            </p>
+            <p id="header-full-address" class="text-xs text-[#CDE0D6] mt-0.5 flex items-center gap-1.5">
+              <i class="fa-solid fa-location-dot text-pink-200"></i>
+              <span>Alamat lengkap belum dilengkapi</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+          <button
+            type="button"
+            onclick="openAboutWebModal()"
+            class="px-3.5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0"
+            title="Tentang DapurBerbagi & Alur Poin"
+          >
+            <i class="fa-solid fa-circle-info"></i>
+            <span>ℹ️ Tentang Web</span>
+          </button>
+
+          <!-- Lencana & Poin Kebaikan (Klik untuk buka Profil / Login) -->
+          <button onclick="switchTab('profil')" class="w-full sm:w-auto text-left flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 transition cursor-pointer">
+            <div class="theme-badge-bg w-10 h-10 rounded-full flex items-center justify-center text-white shadow-inner shrink-0">
+              <i class="fa-solid fa-award text-lg"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="header-badge-title" class="text-xs font-bold uppercase tracking-wider text-pink-200">
+                  Ibu Bijak Anti-Mubazir
+                </span>
+              </div>
+              <div class="text-sm font-semibold">
+                <span id="header-points">0</span> Poin Kebaikan • <span id="header-shared-count" class="text-[#CDE0D6]">0x Berbagi</span>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Kalkulator Dampak & Penghematan Lingkungan -->
+      <div id="header-impact-bar" class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/15 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-4">
+            <div class="theme-badge-bg w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-coins text-xl text-white"></i>
+            </div>
+            <div>
+              <p class="text-xs text-[#DCE8E1] font-medium">Estimasi Uang Belanja Dihemat</p>
+              <p id="stat-money" class="text-xl font-extrabold text-white">🔒 Lengkapi Alamat</p>
+            </div>
+          </div>
+          <button
+            onclick="openImpactInfoModal('money')"
+            class="w-9 h-9 min-h-0 rounded-full bg-white/15 hover:bg-white/30 text-white text-xs font-bold flex items-center justify-center shrink-0 transition cursor-pointer"
+            title="Cara kerja perhitungan uang dihemat"
+          >
+            ?
+          </button>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/15 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl bg-[#8FB399]/30 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-scale-balanced text-xl text-white"></i>
+            </div>
+            <div>
+              <p class="text-xs text-[#DCE8E1] font-medium">Pangan Terselamatkan Warga</p>
+              <p id="stat-food" class="text-xl font-extrabold text-white">🔒 Lengkapi Alamat</p>
+            </div>
+          </div>
+          <button
+            onclick="openImpactInfoModal('food')"
+            class="w-9 h-9 min-h-0 rounded-full bg-white/15 hover:bg-white/30 text-white text-xs font-bold flex items-center justify-center shrink-0 transition cursor-pointer"
+            title="Cara kerja perhitungan pangan terselamatkan"
+          >
+            ?
+          </button>
+        </div>
+
+        <div class="bg-[#FAF7F2] text-[#2C3E35] rounded-2xl p-4 shadow-md flex items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-bold theme-text uppercase">Punya Bahan Berlebih?</p>
+            <p class="text-sm font-semibold mt-0.5">Bagikan ke tetangga sekitar</p>
+          </div>
+          <button
+            onclick="openShareModalFromHeader()"
+            class="theme-btn-main px-4 py-2.5 text-sm font-bold rounded-xl shadow transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+          >
+            <i class="fa-solid fa-plus"></i>
+            Bagikan
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- --- BOTTOM NAVIGATION BAR (FIXED DI BAGIAN BAWAH LAYAR ALA SHOPEE) --- -->
+  <nav id="main-nav-wrapper" aria-label="Navigasi Utama Bawah" class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E6DFD3] shadow-[0_-6px_24px_rgba(44,62,53,0.08)]">
+    <div id="main-nav-container" class="max-w-xl mx-auto px-2 sm:px-4 h-[72px] grid grid-cols-5 items-center relative">
+      <!-- Tab 1: Berbagi -->
+      <button
+        type="button"
+        id="tab-btn-berbagi"
+        onclick="switchTab('berbagi')"
+        class="bottom-nav-item active relative flex flex-col items-center justify-center gap-1 py-1.5 rounded-2xl cursor-pointer select-none"
+      >
+        <span class="nav-active-pill absolute top-0 w-7 h-1 rounded-b-full"></span>
+        <div class="nav-icon-wrap relative w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200">
+          <i class="fa-solid fa-hand-holding-heart text-base"></i>
+          <span id="available-count-badge" class="theme-badge-bg absolute -top-1 -right-1.5 text-[10px] font-extrabold leading-none px-1.5 py-0.5 rounded-full shadow-xs">
+            5
+          </span>
+        </div>
+        <span class="text-[11px] font-extrabold tracking-tight leading-none">Berbagi</span>
+      </button>
+
+      <!-- Tab 2: Kulkas -->
+      <button
+        type="button"
+        id="tab-btn-kulkas"
+        onclick="switchTab('kulkas')"
+        class="bottom-nav-item relative flex flex-col items-center justify-center gap-1 py-1.5 rounded-2xl cursor-pointer select-none"
+      >
+        <span class="nav-active-pill absolute top-0 w-7 h-1 rounded-b-full"></span>
+        <div class="nav-icon-wrap relative w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200">
+          <i class="fa-solid fa-snowflake text-base"></i>
+          <span id="pantry-alert-dot" class="absolute top-0.5 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" title="Ada bahan hampir kedaluwarsa"></span>
+        </div>
+        <span class="text-[11px] font-extrabold tracking-tight leading-none">Kulkas</span>
+      </button>
+
+      <!-- Tab 3 (Tengah - Tombol Aksi Menonjol): + Bagikan -->
+      <div class="flex flex-col items-center justify-center -mt-6">
+        <button
+          type="button"
+          id="tab-btn-bagikan-center"
+          onclick="openShareModalFromHeader()"
+          aria-label="Bagikan Bahan Makanan"
+          class="theme-btn-main w-14 h-14 rounded-full border-4 border-[#FAF7F2] shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer"
+        >
+          <i class="fa-solid fa-plus text-xl"></i>
+        </button>
+        <span class="text-[11px] font-extrabold theme-text mt-1 leading-none">Bagikan</span>
+      </div>
+
+      <!-- Tab 4: Resep -->
+      <button
+        type="button"
+        id="tab-btn-resep"
+        onclick="switchTab('resep')"
+        class="bottom-nav-item relative flex flex-col items-center justify-center gap-1 py-1.5 rounded-2xl cursor-pointer select-none"
+      >
+        <span class="nav-active-pill absolute top-0 w-7 h-1 rounded-b-full"></span>
+        <div class="nav-icon-wrap relative w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200">
+          <i class="fa-solid fa-kitchen-set text-base"></i>
+        </div>
+        <span class="text-[11px] font-extrabold tracking-tight leading-none">Resep</span>
+      </button>
+
+      <!-- Tab 5: Profil -->
+      <button
+        type="button"
+        id="tab-btn-profil"
+        onclick="switchTab('profil')"
+        class="bottom-nav-item relative flex flex-col items-center justify-center gap-1 py-1.5 rounded-2xl cursor-pointer select-none"
+      >
+        <span class="nav-active-pill absolute top-0 w-7 h-1 rounded-b-full"></span>
+        <div class="nav-icon-wrap relative w-9 h-8 rounded-xl flex items-center justify-center transition-all duration-200">
+          <i class="fa-solid fa-user-circle text-base"></i>
+        </div>
+        <span id="tab-profil-label" class="text-[11px] font-extrabold tracking-tight leading-none">Profil</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- --- CONTENT AREA --- -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 mt-6">
+
+    <!-- =========================================================
+        TAB 1: BERBAGI & TUKAR BAHAN TETANGGA
+       ========================================================= -->
+    <section id="view-berbagi" class="space-y-6">
+      <!-- Header & Filter Bar -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-[#E6DFD3] shadow-sm">
+        <div>
+          <h2 class="text-xl font-extrabold text-[#2C3E35]">Etalase Berbagi Tetangga</h2>
+          <p class="text-sm text-[#64756C]">Ambil atau tukar bahan makanan berlebih dari warga di sekitar wilayah Anda.</p>
+        </div>
+
+        <div id="category-filters" class="flex flex-wrap items-center gap-2">
+          <!-- Filter pills rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Grid Kartu Bahan Makanan -->
+      <div id="shared-items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Cards rendered via JS -->
+      </div>
+    </section>
+
+    <!-- =========================================================
+        TAB 2: IDE RESEP DARI BAHAN DI KULKAS
+       ========================================================= -->
+    <section id="view-resep" class="hidden space-y-6">
+      <!-- Ingredient Picker Card -->
+      <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-[#2C3E35] flex items-center gap-2">
+              <i class="fa-solid fa-kitchen-set theme-text"></i>
+              Bahan Apa Saja yang Ada di Rumah?
+            </h2>
+            <p class="text-sm text-[#64756C]">Pilih bahan dari stok kulkas atau ketik bahan yang tersedia untuk melihat kecocokan Bahan Utama & Bumbu.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 self-start sm:self-center">
+            <button
+              type="button"
+              onclick="syncIngredientsFromPantry()"
+              class="theme-btn-soft border px-3 py-1.5 min-h-0 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+            >
+              <i class="fa-solid fa-snowflake"></i>
+              <span>Sinkronkan Stok Kulkas</span>
+            </button>
+            <button
+              id="reset-ingredients-btn"
+              onclick="resetSelectedIngredients()"
+              class="text-xs font-bold text-pink-600 hover:underline px-2 py-1 min-h-0 cursor-pointer"
+            >
+              Reset Pilihan (3)
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Bahan Utama -->
+        <div class="bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#EFE9DD] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2 flex-1">
+            <label for="main-ingredient-filter" class="text-xs font-extrabold text-[#2C3E35] shrink-0">Filter Bahan Utama:</label>
+            <div class="relative flex-1 min-w-[200px] max-w-xs">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#7A8B82] text-xs"></i>
+              <input
+                type="text"
+                id="main-ingredient-filter"
+                list="main-ingredients-suggestions"
+                oninput="setMainIngredientFilter(this.value)"
+                placeholder="Ketik bahan utama (misal: Kentang, Tepung Terigu)..."
+                class="w-full pl-8 pr-7 py-1.5 rounded-xl bg-white border border-[#DCD3C4] text-xs font-bold text-[#2C3E35] focus:outline-none focus:border-pink-500"
+              />
+              <button
+                type="button"
+                id="clear-main-filter-btn"
+                onclick="clearMainIngredientFilter()"
+                title="Hapus filter bahan utama"
+                class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-[#7A8B82] hover:text-rose-600 text-xs min-h-0 p-0.5 cursor-pointer"
+              >
+                <i class="fa-solid fa-circle-xmark"></i>
+              </button>
+              <datalist id="main-ingredients-suggestions">
+                <option value="Kentang"></option>
+                <option value="Tepung Terigu"></option>
+                <option value="Ayam"></option>
+                <option value="Telur Ayam"></option>
+                <option value="Nasi"></option>
+                <option value="Bayam"></option>
+                <option value="Tempe"></option>
+                <option value="Tahu"></option>
+                <option value="Pasta / Mie"></option>
+                <option value="Roti Tawar"></option>
+                <option value="Pisang"></option>
+                <option value="Sayur"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <label class="inline-flex items-center gap-2 text-xs font-bold text-[#4A5D53] cursor-pointer select-none">
+            <input
+              type="checkbox"
+              id="only-main-match-toggle"
+              onchange="toggleOnlyMainMatch(this.checked)"
+              class="w-4 h-4 rounded accent-pink-500 cursor-pointer"
+            />
+            <span>Hanya tampilkan resep yang Bahan Utamanya tersedia</span>
+          </label>
+        </div>
+
+        <!-- Quick Select Chips -->
+        <div id="common-ingredients-list" class="flex flex-wrap gap-2">
+          <!-- Chips rendered via JS -->
+        </div>
+
+        <!-- Custom Ingredient Input -->
+        <form onsubmit="handleAddCustomIngredient(event)" class="flex flex-col sm:flex-row gap-2 max-w-md">
+          <input
+            type="text"
+            id="custom-ingredient-input"
+            placeholder="Tambah bahan lain (misal: Ayam, Kentang, Cabai)..."
+            class="flex-1 px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+          />
+          <button
+            type="submit"
+            class="theme-btn-main px-5 py-3 text-sm font-bold rounded-xl transition cursor-pointer shrink-0"
+          >
+            Tambah
+          </button>
+        </form>
+      </div>
+
+      <!-- Recipe Results -->
+      <div>
+        <h3 id="recipe-results-heading" class="text-lg font-extrabold text-[#2C3E35] mb-4">
+          Rekomendasi Resep Anti-Mubazir (0 Cocok)
+        </h3>
+
+        <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Recipes rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+        TAB 3: PELACAK ISI KULKAS & KEDALUWARSA (SMART PANTRY)
+       ========================================================= -->
+    <section id="view-kulkas" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column: Form Tambah Stok Kulkas -->
+      <div class="lg:col-span-1">
+        <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm sticky top-6">
+          <h2 class="text-lg font-extrabold text-[#2C3E35] mb-1">Catat Bahan di Kulkas</h2>
+          <p class="text-xs text-[#64756C] mb-4">Pantau kesegaran bahan agar tidak lupa dan terbuang sia-sia.</p>
+
+          <form onsubmit="handleAddPantryItem(event)" class="space-y-3.5">
+            <div>
+              <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nama Bahan Makanan</label>
+              <input
+                type="text"
+                id="pantry-name"
+                required
+                placeholder="Contoh: Sawi Hijau, Ikan Kembung"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Jumlah / Porsi</label>
+                <input
+                  type="text"
+                  id="pantry-qty"
+                  required
+                  placeholder="Misal: 1 Ikat"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kategori</label>
+                <select
+                  id="pantry-cat"
+                  class="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+                >
+                  <option value="Sayuran">Sayuran</option>
+                  <option value="Protein">Protein</option>
+                  <option value="Buah">Buah</option>
+                  <option value="Karbohidrat">Karbohidrat</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#4A5D53] mb-1">Estimasi Tahan Berapa Hari?</label>
+              <select
+                id="pantry-days"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+              >
+                <option value="0">Hari ini terakhir (Harus segera diolah)</option>
+                <option value="1">1 Hari lagi</option>
+                <option value="2">2 Hari lagi</option>
+                <option value="5" selected>3 - 5 Hari (Masih segar)</option>
+                <option value="7">1 Minggu lebih</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nilai Bahan (Rp) <span class="font-normal text-[#7A8B82]">(Opsional)</span></label>
+                <input
+                  type="number"
+                  id="pantry-value"
+                  min="0"
+                  step="1000"
+                  placeholder="Default: 10000"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Perkiraan Berat</label>
+                <select
+                  id="pantry-weight"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+                >
+                  <option value="0.25">Ringan (~0.25 kg)</option>
+                  <option value="0.5" selected>Sedang (~0.5 kg)</option>
+                  <option value="1">Berat (~1 kg)</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="theme-btn-main w-full py-3 font-bold text-sm rounded-xl shadow transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i class="fa-solid fa-plus"></i>
+              Simpan ke Daftar Kulkas
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Daftar Isi Kulkas dengan Indikator Warna -->
+      <div class="lg:col-span-2 space-y-4">
+        <!-- Color Legend -->
+        <div class="bg-white p-4 rounded-2xl border border-[#E6DFD3] flex flex-wrap items-center justify-between gap-3">
+          <span id="pantry-count-label" class="text-sm font-extrabold text-[#2C3E35]">Stok Kulkas Anda (6 Bahan)</span>
+          <div class="flex flex-wrap items-center gap-3 text-xs font-semibold">
+            <span class="flex items-center gap-1.5 text-rose-700">
+              <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> Hari Terakhir
+            </span>
+            <span class="flex items-center gap-1.5 text-amber-700">
+              <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span> Segera Olah (1-2 Hari)
+            </span>
+            <span class="flex items-center gap-1.5 text-emerald-700">
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Masih Segar
+            </span>
+          </div>
+        </div>
+
+        <!-- List Items -->
+        <div id="pantry-items-list" class="space-y-3">
+          <!-- Pantry items rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+        TAB 4: PROFIL, LOGIN LOKASI AKURAT, TEMA & PENUKARAN POIN
+       ========================================================= -->
+    <section id="view-profil" class="hidden space-y-6">
+      
+      <!-- Banner Profil Pengguna (Mendukung Upload Foto Banner & Foto Avatar) -->
+      <div id="profile-banner-card" class="rounded-3xl overflow-hidden bg-white border border-[#E6DFD3] shadow-sm">
+        <div id="profile-banner-bg" class="h-36 sm:h-44 bg-gradient-to-r from-pink-500 via-rose-400 to-amber-400 relative overflow-hidden">
+          <img id="profile-banner-img" src="" alt="Banner Profil" class="hidden w-full h-full object-cover" />
+          <div id="profile-banner-pattern" class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/15 pointer-events-none"></div>
+
+          <!-- Input File Tersembunyi untuk Banner -->
+          <input type="file" id="upload-banner-input" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="handleImageUpload(event, 'banner')" />
+
+          <!-- Tombol Ganti Foto Banner & Badge Wilayah -->
+          <div class="absolute top-3.5 left-4 right-4 flex flex-wrap items-center justify-between gap-2">
+            <div class="bg-black/35 backdrop-blur-md text-white text-xs font-bold px-3.5 py-1.5 rounded-full flex items-center gap-1.5">
+              <i class="fa-solid fa-location-dot"></i>
+              <span id="banner-location-short">RW 05 Harmoni</span>
+            </div>
+
+            <button
+              type="button"
+              onclick="document.getElementById('upload-banner-input').click()"
+              class="bg-white/90 hover:bg-white text-[#2C3E35] text-xs font-extrabold px-3.5 py-1.5 min-h-0 rounded-full shadow-md flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <i class="fa-solid fa-camera theme-text"></i>
+              <span>Ganti Foto Banner</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="px-6 pb-6 pt-0 relative flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-end gap-4 -mt-10 sm:-mt-12">
+            <!-- Avatar Container dengan Tombol Kamera -->
+            <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
+              <div class="theme-soft-bg theme-text theme-border w-full h-full rounded-3xl flex items-center justify-center text-2xl sm:text-3xl font-extrabold border-4 border-white shadow-md overflow-hidden">
+                <span id="profile-avatar-initials">WG</span>
+                <img id="profile-avatar-img" src="" alt="Foto Profil" class="hidden w-full h-full object-cover" />
+              </div>
+
+              <!-- Input File Tersembunyi untuk Avatar -->
+              <input type="file" id="upload-avatar-input" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="handleImageUpload(event, 'avatar')" />
+
+              <button
+                type="button"
+                onclick="document.getElementById('upload-avatar-input').click()"
+                title="Ganti Foto Profil"
+                class="theme-btn-main absolute -bottom-1 -right-1 w-8 h-8 min-h-0 rounded-full border-2 border-white shadow-md flex items-center justify-center text-xs cursor-pointer transition transform hover:scale-105"
+              >
+                <i class="fa-solid fa-camera"></i>
+              </button>
+            </div>
+
+            <div class="pt-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 id="profile-display-name" class="text-xl sm:text-2xl font-extrabold text-[#2C3E35]">Warga DapurBerbagi</h2>
+                <span id="login-status-pill" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                  Belum Login
+                </span>
+              </div>
+              <p id="profile-full-address" class="text-xs sm:text-sm text-[#64756C] mt-0.5">
+                Silakan masuk melalui halaman login untuk menampilkan identitas & wilayah Anda
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 self-start sm:self-end">
+            <span class="theme-soft-bg theme-text theme-border inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-xs font-bold">
+              <i class="fa-solid fa-award"></i>
+              <span id="profile-badge-title">Ibu Bijak Anti-Mubazir</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Kolom Kiri: Form Login Alamat Akurat & Setting Tema -->
+        <div class="lg:col-span-1 space-y-6">
+          
+          <!-- Menu Login & Penempatan Lokasi Akurat -->
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-extrabold text-[#2C3E35] flex items-center gap-2">
+                <i class="fa-solid fa-right-to-bracket theme-text"></i>
+                <span id="login-card-title">Login & Lokasi Rumah</span>
+              </h3>
+              <button
+                id="logout-btn"
+                onclick="handleLogout()"
+                class="hidden text-xs font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-xl px-3 py-1.5 min-h-0 cursor-pointer flex items-center gap-1"
+              >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar / Ganti Akun</span>
+              </button>
+            </div>
+            <p class="text-xs text-[#64756C] mb-4">
+              Masuk dan lengkapi alamat Kabupaten hingga RT/RW agar tetangga sekitar dapat menemukan lokasi Anda secara akurat.
+            </p>
+
+            <form onsubmit="handleUserLogin(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nama Warga</label>
+                <input
+                  type="text"
+                  id="login-name"
+                  required
+                  placeholder="Contoh: Ibu Siti Aminah"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-pink-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nomor WhatsApp</label>
+                <input
+                  type="tel"
+                  id="login-phone"
+                  required
+                  placeholder="Contoh: 081234567890"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-pink-500"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kabupaten / Kota</label>
+                  <select
+                    id="login-kabupaten-select"
+                    required
+                    onchange="handleRegionSelectChange('login', 'kabupaten')"
+                    class="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-pink-500"
+                  >
+                    <option value="">-- Pilih Kabupaten / Kota --</option>
+                  </select>
+                  <input
+                    type="text"
+                    id="login-kabupaten-manual"
+                    placeholder="Ketik Kabupaten / Kota..."
+                    class="hidden mt-1.5 w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kecamatan</label>
+                  <select
+                    id="login-kecamatan-select"
+                    required
+                    disabled
+                    onchange="handleRegionSelectChange('login', 'kecamatan')"
+                    class="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-pink-500 disabled:opacity-60"
+                  >
+                    <option value="">-- Pilih Kecamatan --</option>
+                  </select>
+                  <input
+                    type="text"
+                    id="login-kecamatan-manual"
+                    placeholder="Ketik Kecamatan..."
+                    class="hidden mt-1.5 w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label class="block text-xs font-bold text-[#4A5D53] mb-1">Desa / Kelurahan</label>
+                  <select
+                    id="login-desa-select"
+                    required
+                    disabled
+                    onchange="handleRegionSelectChange('login', 'desa')"
+                    class="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs font-semibold text-[#2C3E35] focus:outline-none focus:border-pink-500 disabled:opacity-60"
+                  >
+                    <option value="">-- Pilih Desa / Kelurahan --</option>
+                  </select>
+                  <input
+                    type="text"
+                    id="login-desa-manual"
+                    placeholder="Ketik Desa / Kelurahan..."
+                    class="hidden mt-1.5 w-full px-3 py-2 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-[#4A5D53] mb-1">RT / RW</label>
+                  <input
+                    type="text"
+                    id="login-rtrw"
+                    required
+                    placeholder="Misal: RT 02 / RW 05"
+                    class="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-xs focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                id="login-submit-btn"
+                class="theme-btn-main w-full py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <i class="fa-solid fa-check-circle"></i>
+                Masuk & Simpan Lokasi
+              </button>
+            </form>
+          </div>
+
+          <!-- Kartu Saldo Poin Kebaikan -->
+          <div id="points-gradient-card" class="bg-gradient-to-br from-pink-500 to-rose-500 text-white p-5 rounded-2xl shadow-md">
+            <p class="text-xs font-bold uppercase tracking-wider text-white/80">Saldo Poin Kebaikan</p>
+            <div class="flex items-baseline gap-2 mt-1">
+              <span id="profile-points-balance" class="text-4xl font-extrabold">0</span>
+              <span class="text-sm font-semibold text-white/90">Poin</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-white/20 text-xs">
+              <div>
+                <span class="text-white/75 block">Total Berbagi</span>
+                <span id="profile-shared-count" class="font-bold text-sm">0 Kali</span>
+              </div>
+              <div>
+                <span class="text-white/75 block">Voucher Ditukar</span>
+                <span id="profile-redeemed-count" class="font-bold text-sm">0 Voucher</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Setting Tema Warna -->
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <h3 class="text-base font-extrabold text-[#2C3E35] mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-palette theme-text"></i>
+              Setting Tema Warna
+            </h3>
+            <p class="text-xs text-[#64756C] mb-4">Pilih nuansa warna tombol & aksen tampilan sesuai selera Anda:</p>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onclick="applyTheme('pink')"
+                class="px-3 py-2.5 rounded-xl border border-pink-200 bg-pink-50/60 hover:bg-pink-100 text-xs font-bold text-pink-700 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="w-4 h-4 rounded-full bg-pink-500 shrink-0"></span>
+                Soft Pink
+              </button>
+              <button
+                type="button"
+                onclick="applyTheme('sage')"
+                class="px-3 py-2.5 rounded-xl border border-[#C5D8CC] bg-[#E8EFEA]/60 hover:bg-[#DCE7DF] text-xs font-bold text-[#3B574B] flex items-center gap-2 cursor-pointer"
+              >
+                <span class="w-4 h-4 rounded-full bg-[#4A6B5D] shrink-0"></span>
+                Hijau Sage
+              </button>
+              <button
+                type="button"
+                onclick="applyTheme('ocean')"
+                class="px-3 py-2.5 rounded-xl border border-sky-200 bg-sky-50/60 hover:bg-sky-100 text-xs font-bold text-sky-700 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="w-4 h-4 rounded-full bg-sky-600 shrink-0"></span>
+                Biru Laut
+              </button>
+              <button
+                type="button"
+                onclick="applyTheme('terracotta')"
+                class="px-3 py-2.5 rounded-xl border border-[#F3C7B6] bg-[#FBECE6]/60 hover:bg-[#F7DDD2] text-xs font-bold text-[#B54E2A] flex items-center gap-2 cursor-pointer"
+              >
+                <span class="w-4 h-4 rounded-full bg-[#D96B43] shrink-0"></span>
+                Terakota
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Tukar Poin Kebaikan, Dompet Voucher & Riwayat -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <div class="mb-5">
+              <h3 class="text-xl font-extrabold text-[#2C3E35]">Tukar Poin Kebaikan</h3>
+              <p class="text-sm text-[#64756C]">Tukarkan poin hasil aksi anti-limbah Anda dengan voucher belanja & perlengkapan dapur ramah lingkungan.</p>
+            </div>
+
+            <div id="rewards-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Rewards rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Dompet Voucher Saya -->
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <div>
+                <h3 class="text-lg font-extrabold text-[#2C3E35] flex items-center gap-2">
+                  <i class="fa-solid fa-ticket theme-text"></i>
+                  Dompet Voucher Saya
+                </h3>
+                <p class="text-xs text-[#64756C]">Tunjukkan kode voucher unik kepada pemilik warung mitra saat pengambilan barang.</p>
+              </div>
+            </div>
+            <div id="my-vouchers-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <!-- Vouchers rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Riwayat Aktivitas Poin -->
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <h3 class="text-lg font-extrabold text-[#2C3E35] mb-4">Riwayat Poin & Penukaran</h3>
+            <div id="point-history-list" class="space-y-3">
+              <!-- History rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+        TAB 5: PANEL VERIFIKASI MITRA UMKM & KELURAHAN
+       ========================================================= -->
+    <section id="section-mitra" class="hidden space-y-6">
+      <!-- Header Info Ekosistem -->
+      <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 inline-block mb-2">
+            Portal Mitra Warung & Kelurahan / DLH
+          </span>
+          <h2 class="text-xl font-extrabold text-[#2C3E35]">Verifikasi Kode Voucher & Rekap Pencairan Dana</h2>
+          <p class="text-sm text-[#64756C] mt-0.5">
+            Validasi kode voucher warga di warung mitra agar tidak digunakan dua kali, sekaligus menghitung rekap tagihan <em>reimburse</em> ke Kelurahan / Dinas Lingkungan Hidup (DLH).
+          </p>
+        </div>
+      </div>
+
+      <!-- Ringkasan Rekap Tagihan Pencairan Dana (Reimburse) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-3xl border border-[#E6DFD3] shadow-sm flex items-center gap-4">
+          <div class="theme-soft-bg theme-text w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-[#64756C]">Total Tagihan Reimburse UMKM</p>
+            <p id="mitra-total-reimburse" class="text-xl font-extrabold text-[#2C3E35]">Rp 0</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-3xl border border-[#E6DFD3] shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-[#64756C]">Voucher Sukses Terverifikasi</p>
+            <p id="mitra-verified-count" class="text-xl font-extrabold text-[#2C3E35]">0 Voucher</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-3xl border border-[#E6DFD3] shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl shrink-0">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-[#64756C]">Voucher Aktif Menunggu Klaim</p>
+            <p id="mitra-active-count" class="text-xl font-extrabold text-[#2C3E35]">0 Voucher</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Form Validasi Kode Voucher oleh Pemilik Warung -->
+        <div class="lg:col-span-1">
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <h3 class="text-lg font-extrabold text-[#2C3E35] mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-qrcode theme-text"></i>
+              Cek & Validasi Voucher
+            </h3>
+            <p class="text-xs text-[#64756C] mb-4">
+              Masukkan kode voucher unik yang ditunjukkan warga saat menukarkan barang di warung mitra.
+            </p>
+
+            <form onsubmit="handleVerifyVoucher(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kode Voucher Warga</label>
+                <input
+                  type="text"
+                  id="verify-voucher-input"
+                  required
+                  placeholder="DB-TRG-XXXX"
+                  class="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-base font-extrabold uppercase tracking-wider text-[#2C3E35] focus:outline-none focus:border-pink-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="theme-btn-main w-full py-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <i class="fa-solid fa-check-double"></i>
+                Verifikasi & Serahkan Barang
+              </button>
+            </form>
+
+            <div class="mt-4 p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#EFE9DD] text-xs text-[#5C6F65] space-y-1">
+              <p class="font-bold text-[#2C3E35]">Alur Pencairan Dana Kelurahan:</p>
+              <p>Setiap voucher yang terverifikasi otomatis masuk ke rekap tagihan bulanan warung mitra untuk dicairkan melalui dana lingkungan Kelurahan / DLH.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabel Rekap Transaksi & Tagihan Reimburse Mitra -->
+        <div class="lg:col-span-2">
+          <div class="bg-white p-6 rounded-3xl border border-[#E6DFD3] shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <div>
+                <h3 class="text-lg font-extrabold text-[#2C3E35]">Rekap Klaim Voucher & Tagihan Mitra</h3>
+                <p class="text-xs text-[#64756C]">Daftar seluruh voucher warga dan status pencairan dananya.</p>
+              </div>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-[#E8EFEA] text-[#4A6B5D] self-start sm:self-center">
+                Program DLH & Kelurahan
+              </span>
+            </div>
+
+            <div id="mitra-reimburse-list" class="space-y-3">
+              <!-- Rekap list rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- --- FOOTER (BERSIH TANPA TOMBOL/PETUNJUK MITRA UNTUK WARGA) --- -->
+  <footer class="max-w-6xl mx-auto px-4 sm:px-6 mt-12 pt-6 border-t border-[#E6DFD3] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64756C]">
+    <p>&copy; 2026 DapurBerbagi • Gerakan Anti-Limbah Makanan Berbasis Komunitas RT/RW & Kelurahan</p>
+    <p class="text-[11px] text-[#7A8B82]">Dapur Hemat • Tetangga Dekat • Bumi Sehat</p>
+  </footer>
+
+  <!-- --- MODAL 4: LOGIN KHUSUS MITRA UMKM / ADMIN KELURAHAN (TERPISAH & AMAN) --- -->
+  <div id="mitra-login-modal" class="hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-xs items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#E6DFD3]">
+      <div class="flex items-center justify-between pb-3 border-b border-[#EFE9DD]">
+        <h3 class="text-lg font-extrabold text-[#2C3E35] flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-[#4A6B5D]"></i>
+          Portal Mitra UMKM & Kelurahan
+        </h3>
+        <button onclick="closeMitraLoginModal()" class="p-1.5 min-h-0 rounded-full hover:bg-[#F3EFE6] text-[#64756C] cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleMitraLogin(event)" class="mt-4 space-y-4">
+        <p class="text-xs text-[#5C6F65] leading-relaxed">
+          Akses terbatas khusus pemilik warung mitra dan pengurus kelurahan untuk memverifikasi kode voucher warga serta rekap pencairan dana <em>reimburse</em> DLH.
+        </p>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">ID Mitra / Kelurahan</label>
+          <input
+            type="text"
+            id="mitra-id-input"
+            required
+            autocomplete="off"
+            placeholder="Masukkan ID Mitra resmi"
+            class="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kata Sandi Rahasia</label>
+          <input
+            type="password"
+            id="mitra-pin-input"
+            required
+            placeholder="Masukkan kata sandi rahasia"
+            class="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm font-semibold text-[#2C3E35] focus:outline-none focus:border-[#4A6B5D]"
+          />
+          <p id="mitra-login-error" class="hidden text-xs font-bold text-rose-600 mt-1.5">
+            ID Mitra atau Kata Sandi Rahasia tidak valid. Akses ditolak.
+          </p>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button
+            type="button"
+            onclick="closeMitraLoginModal()"
+            class="flex-1 py-2.5 rounded-xl bg-[#F3EFE6] text-[#5C6F65] font-bold text-sm cursor-pointer"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="flex-1 py-2.5 rounded-xl bg-[#4A6B5D] hover:bg-[#3B574B] text-white font-bold text-sm shadow transition cursor-pointer"
+          >
+            Masuk Portal Mitra
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- --- MODAL 2: DETAIL LANGKAH MEMASAK RESEP --- -->
+  <div id="recipe-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[88vh] overflow-y-auto p-6 shadow-2xl border border-[#E6DFD3]">
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-[#EFE9DD]">
+        <div>
+          <span id="recipe-modal-time" class="text-xs font-bold theme-text uppercase tracking-wider">
+            Resep Anti-Mubazir
+          </span>
+          <h3 id="recipe-modal-title" class="text-xl font-extrabold text-[#2C3E35] mt-1">Judul Resep</h3>
+        </div>
+        <button onclick="closeRecipeModal()" class="p-1.5 min-h-0 rounded-full hover:bg-[#F3EFE6] text-[#64756C] cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-5">
+        <div>
+          <h4 class="text-sm font-extrabold text-[#2C3E35] mb-2 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span>
+            <span>Bahan Utama:</span>
+          </h4>
+          <ul id="recipe-modal-main-ingredients" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></ul>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-extrabold text-[#2C3E35] mb-2 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+            <span>Bahan Tambahan & Bumbu:</span>
+          </h4>
+          <ul id="recipe-modal-seasonings" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></ul>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-extrabold text-[#2C3E35] mb-2">Langkah Memasak Praktis:</h4>
+          <ol id="recipe-modal-steps" class="space-y-3"></ol>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-[#EFE9DD] flex justify-end">
+        <button
+          id="claim-recipe-btn"
+          onclick="claimRecipePoints()"
+          class="theme-btn-main w-full py-3 rounded-2xl font-bold text-sm transition flex items-center justify-center gap-2 shadow-sm cursor-pointer"
+        >
+          <i class="fa-solid fa-utensils"></i>
+          <span>Saya Sudah Masak Resep Ini!</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- MODAL 3: PENJELASAN PERHITUNGAN DAMPAK --- -->
+  <div id="impact-info-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#E6DFD3]">
+      <div class="flex items-center justify-between pb-3 border-b border-[#EFE9DD]">
+        <h3 id="impact-modal-title" class="text-lg font-extrabold text-[#2C3E35] flex items-center gap-2"></h3>
+        <button onclick="closeImpactInfoModal()" class="p-1.5 min-h-0 rounded-full hover:bg-[#F3EFE6] text-[#64756C] cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div id="impact-modal-body" class="mt-4 text-sm text-[#4A5D53] space-y-3 leading-relaxed"></div>
+      <div class="mt-5 pt-3 border-t border-[#EFE9DD]">
+        <button onclick="closeImpactInfoModal()" class="theme-btn-main w-full py-2.5 rounded-xl font-bold text-sm cursor-pointer">
+          Mengerti
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- MODAL 5: TENTANG WEB & ALUR PENGUMPULAN POIN --- -->
+  <div id="about-web-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[88vh] overflow-y-auto p-6 shadow-2xl border border-[#E6DFD3]">
+      <div class="flex items-center justify-between pb-3 border-b border-[#EFE9DD]">
+        <h3 class="text-lg font-extrabold text-[#2C3E35] flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-[#E8EFEA] text-[#4A6B5D] flex items-center justify-center text-sm">
+            <i class="fa-solid fa-leaf"></i>
+          </span>
+          <span>Tentang DapurBerbagi</span>
+        </h3>
+        <button onclick="closeAboutWebModal()" class="p-1.5 min-h-0 rounded-full hover:bg-[#F3EFE6] text-[#64756C] cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs sm:text-sm text-[#4A5D53] leading-relaxed">
+        <p>
+          <strong>DapurBerbagi</strong> adalah platform komunitas warga berbasis wilayah RT/RW dan Desa/Kelurahan untuk mencegah limbah makanan rumah tangga (<em>food waste</em>) sekaligus menghemat pengeluaran dapur.
+        </p>
+
+        <div class="space-y-2.5 bg-[#FAF7F2] p-4 rounded-2xl border border-[#EFE9DD]">
+          <p class="font-extrabold text-[#2C3E35]">3 Kegunaan Utama Aplikasi:</p>
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-[#4A6B5D] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+            <p><strong>Berbagi Bahan Pangan Tetangga:</strong> Unggah foto bahan makanan atau masakan berlebih yang masih segar agar dapat diklaim dan diambil oleh tetangga terdekat.</p>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-[#4A6B5D] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+            <p><strong>Pelacak Kulkas & Ide Resep:</strong> Catat sisa bahan di kulkas beserta perkiraan masa simpannya dan dapatkan rekomendasi resep praktis sebelum bahan kedaluwarsa.</p>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-5 h-5 rounded-full bg-[#4A6B5D] text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+            <p><strong>Dompet Voucher UMKM Lokal:</strong> Poin kebaikan yang terkumpul dapat ditukarkan dengan voucher belanja sayur, sembako, dan bibit tanaman di mitra UMKM kelurahan.</p>
+          </div>
+        </div>
+
+        <div class="space-y-2 bg-[#E8EFEA]/60 p-4 rounded-2xl border border-[#C5D8CC]">
+          <p class="font-extrabold text-[#2C3E35]">Alur Pengumpulan Poin & Penghematan:</p>
+          <ul class="list-disc pl-5 space-y-1 text-xs">
+            <li><strong>Posting Bahan Berlebih:</strong> +15 Poin & menambah estimasi uang belanja dihemat serta berat pangan terselamatkan.</li>
+            <li><strong>Konfirmasi Serah Terima Barang:</strong> +10 Poin bonus setelah barang selesai diambil dan dikonfirmasi diterima.</li>
+            <li><strong>Memasak Resep Kulkas / Mengolah Stok Kulkas:</strong> +10 hingga +15 Poin penyelamatan pangan.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-5 pt-3 border-t border-[#EFE9DD]">
+        <button
+          type="button"
+          onclick="closeAboutWebModal()"
+          class="theme-btn-main w-full py-2.5 rounded-xl font-bold text-sm shadow transition cursor-pointer"
+        >
+          Siap Menggunakan DapurBerbagi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- MODAL 1: FORM BAGIKAN BAHAN MAKANAN --- -->
+  <div id="share-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-[#E6DFD3]">
+      <div class="flex items-center justify-between pb-3 border-b border-[#EFE9DD]">
+        <h3 class="text-lg font-extrabold text-[#2C3E35] flex items-center gap-2">
+          <i class="fa-solid fa-hand-holding-heart theme-text"></i>
+          Bagikan Bahan ke Tetangga
+        </h3>
+        <button onclick="closeShareModal()" class="p-1.5 min-h-0 rounded-full hover:bg-[#F3EFE6] text-[#64756C] cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleAddShareItem(event)" class="mt-4 space-y-3.5">
+        <!-- Input Upload Foto Bahan Makanan & Preview -->
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Foto Bahan Makanan <span class="font-normal text-[#7A8B82]">(JPG/PNG - Opsional)</span></label>
+          <div class="flex items-center gap-3 p-3 rounded-2xl bg-[#FAF7F2] border border-dashed border-[#DCD3C4]">
+            <div id="share-photo-preview-box" class="w-16 h-16 rounded-xl bg-white border border-[#E6DFD3] flex items-center justify-center text-[#7A8B82] overflow-hidden shrink-0">
+              <i id="share-photo-placeholder-icon" class="fa-solid fa-camera text-xl"></i>
+              <img id="share-photo-preview-img" src="" referrerpolicy="no-referrer" alt="Preview Bahan" class="hidden w-full h-full object-cover" />
+            </div>
+            <div class="flex-1 space-y-1">
+              <input
+                type="file"
+                id="share-photo-input"
+                accept="image/png, image/jpeg, image/webp"
+                class="hidden"
+                onchange="handleSharePhotoChange(event)"
+              />
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onclick="document.getElementById('share-photo-input').click()"
+                  class="theme-btn-soft border px-3 py-1.5 min-h-0 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <i class="fa-solid fa-image"></i>
+                  <span id="share-photo-btn-label">Pilih / Ambil Foto</span>
+                </button>
+                <button
+                  type="button"
+                  id="share-photo-clear-btn"
+                  onclick="clearSharePhoto()"
+                  class="hidden text-[11px] font-bold text-rose-600 hover:underline px-1.5 py-1 min-h-0 cursor-pointer"
+                >
+                  Hapus
+                </button>
+              </div>
+              <p class="text-[11px] text-[#7A8B82]">Tampilkan kondisi kesegaran bahan agar tetangga makin yakin.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nama Bahan / Makanan</label>
+          <input
+            type="text"
+            id="share-name"
+            required
+            placeholder="Misal: Sisa 1 ikat kangkung / Sup ayam 2 porsi"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Jumlah / Porsi</label>
+            <input
+              type="text"
+              id="share-qty"
+              required
+              placeholder="Misal: 1 Ikat / 2 Porsi"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kategori</label>
+            <select
+              id="share-cat"
+              class="w-full px-3 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+            >
+              <option value="Sayuran">Sayuran</option>
+              <option value="Lauk Pauk">Lauk Pauk (Telur, Ayam, Tempe, Tahu)</option>
+              <option value="Buah">Buah</option>
+              <option value="Makanan Matang">Makanan Matang</option>
+              <option value="Bumbu">Bumbu</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Kondisi / Keterangan Makanan (Contoh: Masih segar, sisa hajatan, baru dimasak)</label>
+          <input
+            type="text"
+            id="share-condition"
+            required
+            placeholder="Contoh: Masih segar baru dipetik pagi ini"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Nilai Bahan (Rp) <span class="font-normal text-[#7A8B82]">(Opsional)</span></label>
+            <input
+              type="number"
+              id="share-value"
+              min="0"
+              step="1000"
+              placeholder="Default: 10000"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#4A5D53] mb-1">Perkiraan Berat</label>
+            <select
+              id="share-weight"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+            >
+              <option value="0.25">Ringan (~0.25 kg)</option>
+              <option value="0.5" selected>Sedang (~0.5 kg)</option>
+              <option value="1">Berat (~1 kg)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Estimasi Kesegaran</label>
+          <input
+            type="text"
+            id="share-freshness"
+            value="Baik digunakan hari ini"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-[#4A5D53] mb-1">Catatan Singkat untuk Tetangga</label>
+          <textarea
+            id="share-notes"
+            rows="2"
+            placeholder="Contoh: Bisa diambil di teras rumah kapan saja ya Bu..."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#DCD3C4] text-sm focus:outline-none focus:border-pink-500"
+          ></textarea>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button
+            type="button"
+            onclick="closeShareModal()"
+            class="flex-1 py-2.5 rounded-xl bg-[#F3EFE6] text-[#5C6F65] font-bold text-sm cursor-pointer"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="theme-btn-main flex-1 py-2.5 rounded-xl font-bold text-sm shadow flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <i class="fa-solid fa-paper-plane"></i>
+            Posting Sekarang
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- --- JAVASCRIPT LOGIC --- -->
+  <script>
+    // --- DATABASE WILAYAH BERJENJANG (KABUPATEN -> KECAMATAN -> DESA/KELURAHAN) ---
+    const REGION_DATABASE = {
+      "Kab. Trenggalek": {
+        "Kec. Durenan": ["Desa Baruharjo", "Desa Durenan", "Desa Gador", "Desa Kamulan", "Desa Karanganom", "Desa Kendalrejo", "Desa Malasan", "Desa Ngadisuko", "Desa Pakis", "Desa Pandean", "Desa Panggungsari", "Desa Semarum", "Desa Sumberejo", "Desa Sumbergayam"],
+        "Kec. Gandusari": ["Desa Gandusari", "Desa Jajar", "Desa Karanganyar", "Desa Krandegan", "Desa Melis", "Desa Ngrayung", "Desa Sukorame", "Desa Sukorejo", "Desa Widoro", "Desa Wonoanti", "Desa Wonorejo"],
+        "Kec. Panggul": ["Desa Banjar", "Desa Barang", "Desa Besuki", "Desa Bodag", "Desa Depok", "Desa Gayam", "Desa Karangtengah", "Desa Kertosono", "Desa Manggis", "Desa Nglebeng", "Desa Ngrambingan", "Desa Ngrencak", "Desa Panggul", "Desa Sawahan", "Desa Tangkil", "Desa Terbis", "Desa Wonocoyo"],
+        "Kec. Karangan": ["Desa Buluagung", "Desa Jati", "Desa Jatiprahu", "Desa Karangan", "Desa Kayen", "Desa Kedungsigit", "Desa Kerjo", "Desa Ngentrong", "Desa Salamrejo", "Desa Sukowetan", "Desa Sumber", "Desa Sumberingin"],
+        "Kec. Trenggalek": ["Kel. Kelutan", "Kel. Ngantru", "Kel. Sumbergedong", "Kel. Surodakan", "Kel. Tamanan", "Desa Dawuhan", "Desa Karangsoko", "Desa Ngares", "Desa Parakan", "Desa Rejowinangun", "Desa Sambirejo", "Desa Sukosari", "Desa Sumberdadi"],
+        "Kec. Pogalan": ["Desa Bendorejo", "Desa Gembleb", "Desa Kedunglurah", "Desa Ngadirejo", "Desa Ngadirenggo", "Desa Ngetal", "Desa Ngulankulon", "Desa Ngulanwetan", "Desa Pogalan", "Desa Wonocoyo"],
+        "Kec. Watulimo": ["Desa Dukuh", "Desa Gemaharjo", "Desa Karanggandu", "Desa Margomulyo", "Desa Ngembel", "Desa Pakel", "Desa Prigi", "Desa Sawahan", "Desa Slawe", "Desa Tasikmadu", "Desa Watuagung", "Desa Watulimo"],
+        "Kec. Kampak": ["Desa Bendoagung", "Desa Bogoran", "Desa Karangrejo", "Desa Ngadimulyo", "Desa Senden", "Desa Sugihan", "Desa Timahan"],
+        "Kec. Dongko": ["Desa Cakul", "Desa Dongko", "Desa Ngerdani", "Desa Pandean", "Desa Petung", "Desa Pringapus", "Desa Salamwates", "Desa Siki", "Desa Sumberbening", "Desa Watuagung"],
+        "Kec. Munjungan": ["Desa Bangun", "Desa Bendoroto", "Desa Besuki", "Desa Craken", "Desa Karangturi", "Desa Masaran", "Desa Munjungan", "Desa Ngulungkulon", "Desa Ngulungwetan", "Desa Sobo", "Desa Tawing"],
+        "Kec. Bendungan": ["Desa Botoputih", "Desa Depok", "Desa Dompyong", "Desa Masaran", "Desa Sengon", "Desa Srabah", "Desa Sumurup", "Desa Surenlor"],
+        "Kec. Suruh": ["Desa Gamping", "Desa Mlinjon", "Desa Nglebo", "Desa Ngrandu", "Desa Puru", "Desa Suruh", "Desa Wonokerto"],
+        "Kec. Tugu": ["Desa Banaran", "Desa Dermosari", "Desa Duren", "Desa Gading", "Desa Gondang", "Desa Jambu", "Desa Ngepeh", "Desa Nglinggis", "Desa Nglongsor", "Desa Prambon", "Desa Pucanganak", "Desa Sukorejo", "Desa Tegaren", "Desa Tumpuk", "Desa Winong"]
+      },
+      "Kab. Tulungagung": {
+        "Kec. Tulungagung": ["Kel. Bago", "Kel. Botoran", "Kel. Jepun", "Kel. Kampungdalem", "Kel. Karangwaru", "Kel. Kauman", "Kel. Kedungsoko", "Kel. Kenayan", "Kel. Kepatihan", "Kel. Kutoanyar", "Kel. Panggungrejo", "Kel. Sembung", "Kel. Tamanan", "Kel. Tertek"],
+        "Kec. Kedungwaru": ["Desa Bangoan", "Desa Boro", "Desa Bulusari", "Desa Gendingan", "Desa Kedungwaru", "Desa Ketanon", "Desa Loderesan", "Desa Majan", "Desa Mangunsari", "Desa Ngujang", "Desa Plandaan", "Desa Plosokandang", "Desa Rejoagung", "Desa Ringinpitu", "Desa Simo", "Desa Tapan", "Desa Tawangsari", "Desa Tunggulsari", "Desa Winong"],
+        "Kec. Boyolangu": ["Desa Beji", "Desa Bono", "Desa Boyolangu", "Desa Gedangsewu", "Desa Karangrejo", "Desa Kendalbulur", "Desa Kepuh", "Desa Moyoketen", "Desa Ngranti", "Desa Pucungkidul", "Desa Sanggrahan", "Desa Serut", "Desa Sobontoro", "Desa Tanjungsari", "Desa Wajak Kidul", "Desa Wajak Lor", "Desa Waung"],
+        "Kec. Ngunut": ["Desa Balesono", "Desa Gilang", "Desa Kacangan", "Desa Kalangan", "Desa Kaliwungu", "Desa Karangsono", "Desa Kromasan", "Desa Ngunut", "Desa Pandansari", "Desa Pulosari", "Desa Pulotondo", "Desa Purworejo", "Desa Samir", "Desa Selorejo", "Desa Sumberejo Kulon", "Desa Sumberejo Wetan"],
+        "Kec. Kauman": ["Desa Balerejo", "Desa Banaran", "Desa Batangsaren", "Desa Bolorejo", "Desa Jatimulyo", "Desa Kalangbret", "Desa Karanganom", "Desa Kates", "Desa Kauman", "Desa Mojosari", "Desa Panggungrejo", "Desa Pucangan", "Desa Sidorejo"]
+      },
+      "Kab. Ponorogo": {
+        "Kec. Ponorogo": ["Kel. Bangunsari", "Kel. Banyudono", "Kel. Brotonegaran", "Kel. Cokromenggalan", "Kel. Jingglong", "Kel. Kauman", "Kel. Keniten", "Kel. Kepatihan", "Kel. Mangkujayan", "Kel. Nologaten", "Kel. Paju", "Kel. Pakunden", "Kel. Pinggirsari", "Kel. Purbosuman", "Kel. Surodikraman", "Kel. Tamanarum", "Kel. Tambakbayan", "Kel. Tonatan"],
+        "Kec. Babadan": ["Desa Babadan", "Desa Barang", "Desa Cekok", "Desa Gupolo", "Desa Japan", "Desa Kadipaten", "Desa Kertosari", "Desa Lembah", "Desa Ngunut", "Desa Patihan Wetan", "Desa Polorejo", "Desa Pondok", "Desa Purwosari", "Desa Sukosari", "Desa Trisono"],
+        "Kec. Jetis": ["Desa Coper", "Desa Jetis", "Desa Josari", "Desa Karanggebang", "Desa Kradenan", "Desa Kutukulon", "Desa Kutuwetan", "Desa Mojorejo", "Desa Mojomati", "Desa Ngasinan", "Desa Tegalsari", "Desa Turi", "Desa Winong", "Desa Wonoketro"],
+        "Kec. Sawoo": ["Desa Bondrang", "Desa Grogol", "Desa Ketro", "Desa Kori", "Desa Ngindeng", "Desa Pangkal", "Desa Prayungan", "Desa Sawoo", "Desa Sriti", "Desa Temon", "Desa Tempuran", "Desa Tugurejo", "Desa Tumpakpelem", "Desa Tumpuk"]
+      },
+      "Kab. Kediri": {
+        "Kec. Pare": ["Kel. Pare", "Desa Bendo", "Desa Darungan", "Desa Gedangsewu", "Desa Pelem", "Desa Sambirejo", "Desa Sidorejo", "Desa Sumberbendo", "Desa Tertek", "Desa Tulungrejo"],
+        "Kec. Ngasem": ["Desa Doko", "Desa Gogorante", "Desa Karangrejo", "Desa Kwadungan", "Desa Nambaan", "Desa Ngasem", "Desa Paron", "Desa Sukorejo", "Desa Sumberejo", "Desa Toyoresmi", "Desa Tugurejo", "Desa Wonocatur"],
+        "Kec. Gurah": ["Desa Adan-Adan", "Desa Bangkok", "Desa Banyuanyar", "Desa Besuk", "Desa Blimbing", "Desa Bogem", "Desa Gabru", "Desa Gayam", "Desa Gempolan", "Desa Gurah", "Desa Kerkep", "Desa Kranggan", "Desa Ngasem", "Desa Nglumbang", "Desa Sukorejo", "Desa Sumbercangkring", "Desa Tambakrejo", "Desa Tiru Kidul", "Desa Tiru Lor", "Desa Turus", "Desa Wonojoyo"]
+      },
+      "Kota Surabaya": {
+        "Kec. Gubeng": ["Kel. Airlangga", "Kel. Baratajaya", "Kel. Gubeng", "Kel. Kertajaya", "Kel. Mojo", "Kel. Pucang Sewu"],
+        "Kec. Wonokromo": ["Kel. Darmo", "Kel. Jagir", "Kel. Ngagel", "Kel. Ngagelrejo", "Kel. Sawunggaling", "Kel. Wonokromo"],
+        "Kec. Rungkut": ["Kel. Kali Rungkut", "Kel. Kedung Baruk", "Kel. Medokan Ayu", "Kel. Penjaringan Sari", "Kel. Rungkut Kidul", "Kel. Wonorejo"],
+        "Kec. Sukolilo": ["Kel. Gebang Putih", "Kel. Keputih", "Kel. Klampis Ngasem", "Kel. Medokan Semampir", "Kel. Menur Pumpungan", "Kel. Nginden Jangkungan", "Kel. Semolowaru"]
+      }
+    };
+
+    const MANUAL_OPTION_VALUE = "__MANUAL__";
+
+    function initRegionDropdowns(prefix) {
+      const kabSelect = document.getElementById(`${prefix}-kabupaten-select`);
+      if (!kabSelect) return;
+
+      const kabList = Object.keys(REGION_DATABASE);
+      kabSelect.innerHTML = `<option value="">-- Pilih Kabupaten / Kota --</option>` +
+        kabList.map(k => `<option value="${k}">${k}</option>`).join('') +
+        `<option value="${MANUAL_OPTION_VALUE}">Lainnya (Input Manual)</option>`;
+    }
+
+    function handleRegionSelectChange(prefix, level) {
+      const kabSelect = document.getElementById(`${prefix}-kabupaten-select`);
+      const kabManual = document.getElementById(`${prefix}-kabupaten-manual`);
+      const kecSelect = document.getElementById(`${prefix}-kecamatan-select`);
+      const kecManual = document.getElementById(`${prefix}-kecamatan-manual`);
+      const desaSelect = document.getElementById(`${prefix}-desa-select`);
+      const desaManual = document.getElementById(`${prefix}-desa-manual`);
+
+      if (!kabSelect || !kecSelect || !desaSelect) return;
+
+      if (level === 'kabupaten') {
+        const selectedKab = kabSelect.value;
+        // Reset kecamatan & desa
+        kecSelect.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
+        kecManual.classList.add('hidden');
+        kecManual.required = false;
+        kecManual.value = '';
+
+        desaSelect.innerHTML = `<option value="">-- Pilih Desa / Kelurahan --</option>`;
+        desaSelect.disabled = true;
+        desaManual.classList.add('hidden');
+        desaManual.required = false;
+        desaManual.value = '';
+
+        if (selectedKab === MANUAL_OPTION_VALUE) {
+          kabManual.classList.remove('hidden');
+          kabManual.required = true;
+          kecSelect.innerHTML = `<option value="">-- Pilih Kecamatan --</option><option value="${MANUAL_OPTION_VALUE}">Lainnya (Input Manual)</option>`;
+          kecSelect.value = MANUAL_OPTION_VALUE;
+          kecSelect.disabled = false;
+          handleRegionSelectChange(prefix, 'kecamatan');
+        } else if (selectedKab && REGION_DATABASE[selectedKab]) {
+          kabManual.classList.add('hidden');
+          kabManual.required = false;
+          kabManual.value = '';
+
+          const kecList = Object.keys(REGION_DATABASE[selectedKab]);
+          kecSelect.innerHTML = `<option value="">-- Pilih Kecamatan --</option>` +
+            kecList.map(kc => `<option value="${kc}">${kc}</option>`).join('') +
+            `<option value="${MANUAL_OPTION_VALUE}">Lainnya (Input Manual)</option>`;
+          kecSelect.disabled = false;
+        } else {
+          kabManual.classList.add('hidden');
+          kabManual.required = false;
+          kabManual.value = '';
+          kecSelect.disabled = true;
+        }
+      } else if (level === 'kecamatan') {
+        const selectedKab = kabSelect.value;
+        const selectedKec = kecSelect.value;
+
+        desaSelect.innerHTML = `<option value="">-- Pilih Desa / Kelurahan --</option>`;
+        desaManual.classList.add('hidden');
+        desaManual.required = false;
+        desaManual.value = '';
+
+        if (selectedKec === MANUAL_OPTION_VALUE) {
+          kecManual.classList.remove('hidden');
+          kecManual.required = true;
+          desaSelect.innerHTML = `<option value="">-- Pilih Desa / Kelurahan --</option><option value="${MANUAL_OPTION_VALUE}">Lainnya (Input Manual)</option>`;
+          desaSelect.value = MANUAL_OPTION_VALUE;
+          desaSelect.disabled = false;
+          handleRegionSelectChange(prefix, 'desa');
+        } else if (selectedKab && REGION_DATABASE[selectedKab] && selectedKec && REGION_DATABASE[selectedKab][selectedKec]) {
+          kecManual.classList.add('hidden');
+          kecManual.required = false;
+          kecManual.value = '';
+
+          const desaList = REGION_DATABASE[selectedKab][selectedKec];
+          desaSelect.innerHTML = `<option value="">-- Pilih Desa / Kelurahan --</option>` +
+            desaList.map(ds => `<option value="${ds}">${ds}</option>`).join('') +
+            `<option value="${MANUAL_OPTION_VALUE}">Lainnya (Input Manual)</option>`;
+          desaSelect.disabled = false;
+        } else {
+          kecManual.classList.add('hidden');
+          kecManual.required = false;
+          kecManual.value = '';
+          desaSelect.disabled = true;
+        }
+      } else if (level === 'desa') {
+        const selectedDesa = desaSelect.value;
+        if (selectedDesa === MANUAL_OPTION_VALUE) {
+          desaManual.classList.remove('hidden');
+          desaManual.required = true;
+        } else {
+          desaManual.classList.add('hidden');
+          desaManual.required = false;
+          desaManual.value = '';
+        }
+      }
+    }
+
+    function getRegionValues(prefix) {
+      const kabSelect = document.getElementById(`${prefix}-kabupaten-select`);
+      const kabManual = document.getElementById(`${prefix}-kabupaten-manual`);
+      const kecSelect = document.getElementById(`${prefix}-kecamatan-select`);
+      const kecManual = document.getElementById(`${prefix}-kecamatan-manual`);
+      const desaSelect = document.getElementById(`${prefix}-desa-select`);
+      const desaManual = document.getElementById(`${prefix}-desa-manual`);
+
+      const kabupaten = (kabSelect && kabSelect.value === MANUAL_OPTION_VALUE)
+        ? (kabManual ? kabManual.value.trim() : '')
+        : (kabSelect ? kabSelect.value.trim() : '');
+
+      const kecamatan = (kecSelect && kecSelect.value === MANUAL_OPTION_VALUE)
+        ? (kecManual ? kecManual.value.trim() : '')
+        : (kecSelect ? kecSelect.value.trim() : '');
+
+      const desa = (desaSelect && desaSelect.value === MANUAL_OPTION_VALUE)
+        ? (desaManual ? desaManual.value.trim() : '')
+        : (desaSelect ? desaSelect.value.trim() : '');
+
+      return { kabupaten, kecamatan, desa };
+    }
+
+    function setRegionValues(prefix, kabupaten, kecamatan, desa) {
+      initRegionDropdowns(prefix);
+      const kabSelect = document.getElementById(`${prefix}-kabupaten-select`);
+      const kabManual = document.getElementById(`${prefix}-kabupaten-manual`);
+      const kecSelect = document.getElementById(`${prefix}-kecamatan-select`);
+      const kecManual = document.getElementById(`${prefix}-kecamatan-manual`);
+      const desaSelect = document.getElementById(`${prefix}-desa-select`);
+      const desaManual = document.getElementById(`${prefix}-desa-manual`);
+
+      if (!kabSelect || !kecSelect || !desaSelect) return;
+
+      if (!kabupaten) {
+        kabSelect.value = '';
+        handleRegionSelectChange(prefix, 'kabupaten');
+        return;
+      }
+
+      if (REGION_DATABASE[kabupaten]) {
+        kabSelect.value = kabupaten;
+        handleRegionSelectChange(prefix, 'kabupaten');
+
+        if (kecamatan && REGION_DATABASE[kabupaten][kecamatan]) {
+          kecSelect.value = kecamatan;
+          handleRegionSelectChange(prefix, 'kecamatan');
+
+          if (desa && REGION_DATABASE[kabupaten][kecamatan].includes(desa)) {
+            desaSelect.value = desa;
+            handleRegionSelectChange(prefix, 'desa');
+          } else if (desa) {
+            desaSelect.value = MANUAL_OPTION_VALUE;
+            handleRegionSelectChange(prefix, 'desa');
+            if (desaManual) desaManual.value = desa;
+          }
+        } else if (kecamatan) {
+          kecSelect.value = MANUAL_OPTION_VALUE;
+          handleRegionSelectChange(prefix, 'kecamatan');
+          if (kecManual) kecManual.value = kecamatan;
+          if (desaManual) desaManual.value = desa || '';
+        }
+      } else {
+        kabSelect.value = MANUAL_OPTION_VALUE;
+        handleRegionSelectChange(prefix, 'kabupaten');
+        if (kabManual) kabManual.value = kabupaten;
+        if (kecManual) kecManual.value = kecamatan || '';
+        if (desaManual) desaManual.value = desa || '';
+      }
+    }
+
+    // --- FOTO FOTOGRAFI BAHAN MAKANAN & MASAKAN RUMAHAN ASLI (UNSPLASH STABIL & BEBAS BLOKIR HOTLINK) ---
+    const CATEGORY_DEFAULT_IMAGES = {
+      'Sayuran': 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+      'Lauk Pauk': 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=600&q=80',
+      'Buah': 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80',
+      'Makanan Matang': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80',
+      'Bumbu': 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80'
+    };
+
+    const CATEGORY_FALLBACK_PHOTO = {
+      'Sayuran': 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=600&q=80',
+      'Lauk Pauk': 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=600&q=80',
+      'Buah': 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
+      'Makanan Matang': 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80',
+      'Bumbu': 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80'
+    };
+
+    function getCategorySvgPlaceholder(category) {
+      const safeLabel = encodeURIComponent(category || 'Bahan Pangan');
+      return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='330' viewBox='0 0 600 330'><rect width='600' height='330' fill='%23E8EFEA'/><circle cx='300' cy='140' r='44' fill='%234A6B5D' opacity='0.18'/><text x='300' y='150' font-family='sans-serif' font-size='28' font-weight='bold' fill='%234A6B5D' text-anchor='middle'>DapurBerbagi</text><text x='300' y='195' font-family='sans-serif' font-size='18' font-weight='600' fill='%235C6F65' text-anchor='middle'>${safeLabel}</text></svg>`;
+    }
+
+    function handleFoodImageError(imgEl, category) {
+      if (!imgEl) return;
+      const stage = parseInt(imgEl.dataset.fallbackStage || '0', 10);
+      if (stage === 0) {
+        imgEl.dataset.fallbackStage = '1';
+        const fallbackUrl = CATEGORY_FALLBACK_PHOTO[category] || CATEGORY_DEFAULT_IMAGES[category] || CATEGORY_FALLBACK_PHOTO['Sayuran'];
+        if (imgEl.src !== fallbackUrl) {
+          imgEl.src = fallbackUrl;
+          return;
+        }
+      }
+      if (stage <= 1) {
+        imgEl.dataset.fallbackStage = '2';
+        imgEl.onerror = null;
+        imgEl.src = getCategorySvgPlaceholder(category);
+      }
+    }
+
+    // --- BANK DATA TETANGGA & BAHAN BERBAGI UNTUK VARIASI DINAMIS PER DESA & RT/RW ---
+    const NEIGHBOR_PROFILES_POOL = [
+      { name: "Bu Rina", phone: "6281234567890" },
+      { name: "Bu Sari", phone: "6281298765432" },
+      { name: "Bu Dewi", phone: "6281345678901" },
+      { name: "Bu Maya", phone: "6281567890123" },
+      { name: "Bu Ningsih", phone: "6281789012345" },
+      { name: "Bu Lestari", phone: "6281223344556" },
+      { name: "Bu Ratna", phone: "6281334455667" },
+      { name: "Bu Wahyu", phone: "6281556677889" },
+      { name: "Bu Endang", phone: "6281778899001" },
+      { name: "Bu Hartini", phone: "6281990011223" }
+    ];
+
+    const REGIONAL_SHARE_TEMPLATES = [
+      {
+        name: "Bayam Hijau & Kangkung Segar",
+        quantity: "2 Ikat Besar",
+        category: "Sayuran",
+        condition: "Baru dipetik pagi ini dari pekarangan, daun masih segar",
+        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80",
+        freshness: "Baik digunakan hari ini",
+        notes: "Panen kebanyakan di kebun samping rumah, silakan diambil buat tumis sayur."
+      },
+      {
+        name: "Nasi Kotak & Lauk Ayam Rumahan",
+        quantity: "2 Porsi Kotak",
+        category: "Makanan Matang",
+        condition: "Baru dimasak pagi ini, higienis & tertutup rapat",
+        image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
+        freshness: "Baik dikonsumsi sampai sore ini",
+        notes: "Sisa syukuran keluarga pagi tadi, masih hangat dan belum tersentuh."
+      },
+      {
+        name: "Telur Ayam Negeri & Tahu Putih",
+        quantity: "6 Butir Telur + 4 Tahu",
+        category: "Lauk Pauk",
+        condition: "Masih segar, tersimpan rapi di kulkas",
+        image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=600&q=80",
+        freshness: "Segar 3 hari di kulkas",
+        notes: "Stok belanja mingguan berlebih, besok mau pergi keluar kota takut tidak terpakai."
+      },
+      {
+        name: "Potongan Ayam Segar & Tempe Papan",
+        quantity: "500 gr Ayam + 1 Papan Tempe",
+        category: "Lauk Pauk",
+        condition: "Baru beli dari pasar pagi ini, bersih & disimpan di chiller",
+        image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=600&q=80",
+        freshness: "Segar 2 hari di kulkas",
+        notes: "Beli ayam & tempe kebanyakan buat persiapan masak, silakan dibagi buat lauk di rumah."
+      },
+      {
+        name: "Bumbu Dapur Cabai, Bawang & Rempah",
+        quantity: "1 Paket Bumbu Lengkap",
+        category: "Bumbu",
+        condition: "Baru beli dari pasar pagi ini, masih kering & segar",
+        image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80",
+        freshness: "Simpan di wadah kering tahan 1 minggu",
+        notes: "Beli bumbu dapur seplastik besar kebanyakan, silakan dibagi buat masak di rumah."
+      },
+      {
+        name: "Mangga Harum Manis Matang",
+        quantity: "4 Buah Mangga",
+        category: "Buah",
+        condition: "Matang pohon alami, manis siap kupas",
+        image: "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80",
+        freshness: "Pas untuk dimakan langsung hari ini",
+        notes: "Panen dari pohon halaman rumah, manis dan harum."
+      },
+      {
+        name: "Wortel, Kentang & Buncis Segar",
+        quantity: "1 Kantong (±750 gr)",
+        category: "Sayuran",
+        condition: "Masih keras dan segar, baru dicuci bersih",
+        image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=600&q=80",
+        freshness: "Tahan 4 hari di laci sayur kulkas",
+        notes: "Cocok buat bahan sayur sop atau capcay, kebanyakan beli di tukang sayur."
+      },
+      {
+        name: "Pisang Kepok Matang Siap Goreng",
+        quantity: "1 Sisir (8 Buah)",
+        category: "Buah",
+        condition: "Matang merata, kulit kuning bersih",
+        image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80",
+        freshness: "Pas diolah hari ini atau besok",
+        notes: "Dapat kiriman dari saudara di desa, kebanyakan kalau dimakan sendiri."
+      },
+      {
+        name: "Soto Ayam Kuah Bening Hangat",
+        quantity: "3 Porsi Mangkuk",
+        category: "Makanan Matang",
+        condition: "Baru matang jam 9 pagi, kuah & isian terpisah",
+        image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80",
+        freshness: "Baik dikonsumsi hari ini",
+        notes: "Masak sepanci besar buat arisan, masih sisa 3 porsi bersih belum tersentuh."
+      },
+      {
+        name: "Cabai Rawit, Bawang Merah & Kunyit",
+        quantity: "1 Kantong Bumbu",
+        category: "Bumbu",
+        condition: "Baru beli dari pasar pagi ini, segar dan kering",
+        image: "https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=600&q=80",
+        freshness: "Tahan 5 hari di wadah terbuka / kulkas",
+        notes: "Tadi beli bumbu dapur seplastik kebanyakan, silakan dibagi buat sambal atau tumis."
+      }
+    ];
+
+    function migrateItemImageUrl(item) {
+      if (!item || typeof item !== 'object') return item;
+      const currentImg = item.image || '';
+      const isBrokenOrLegacy = !currentImg ||
+        currentImg.includes('wikimedia.org') ||
+        currentImg.startsWith('http://');
+      if (!isBrokenOrLegacy) return item;
+
+      const matchedTemplate = REGIONAL_SHARE_TEMPLATES.find(t => t.name === item.name);
+      const replacementImg = matchedTemplate
+        ? matchedTemplate.image
+        : (CATEGORY_DEFAULT_IMAGES[item.category] || CATEGORY_FALLBACK_PHOTO[item.category] || CATEGORY_DEFAULT_IMAGES['Sayuran']);
+
+      return { ...item, image: replacementImg };
+    }
+
+    function migrateAllStoredRegionalItems() {
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('dapurBerbagiItems_')) {
+            const raw = localStorage.getItem(key);
+            if (!raw) continue;
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              const updated = parsed.map(migrateItemImageUrl);
+              localStorage.setItem(key, JSON.stringify(updated));
+            }
+          }
+        }
+      } catch (err) {}
+    }
+
+    function getRegionKey() {
+      const desa = (userProfile && userProfile.desa ? userProfile.desa : 'default_desa').trim().toLowerCase();
+      const rtrw = (userProfile && userProfile.rtrw ? userProfile.rtrw : 'default_rtrw').trim().toLowerCase();
+      return `${desa}|${rtrw}`;
+    }
+
+    function computeRegionHash(str) {
+      let hash = 2166136261;
+      for (let i = 0; i < str.length; i++) {
+        hash ^= str.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return Math.abs(hash >>> 0);
+    }
+
+    function generateRegionSeededItems(desaName, rtrwName) {
+      const cleanDesa = (desaName || 'Desa Harmoni').trim();
+      const cleanRtRw = (rtrwName || 'RT 01 / RW 01').trim();
+      const seed = computeRegionHash(`${cleanDesa.toLowerCase()}|${cleanRtRw.toLowerCase()}`);
+
+      const count = 4 + (seed % 3); // 4 s/d 6 item unik per kombinasi Desa + RT/RW
+      const timeLabels = ['12 menit lalu', '28 menit lalu', '45 menit lalu', '1 jam lalu', '2 jam lalu', '3 jam lalu'];
+      const generated = [];
+      const usedTemplateIdx = new Set();
+      const usedNeighborIdx = new Set();
+
+      for (let i = 0; i < count; i++) {
+        let tIdx = (seed + i * 7) % REGIONAL_SHARE_TEMPLATES.length;
+        while (usedTemplateIdx.has(tIdx)) {
+          tIdx = (tIdx + 1) % REGIONAL_SHARE_TEMPLATES.length;
+        }
+        usedTemplateIdx.add(tIdx);
+
+        let nIdx = (seed * 3 + i * 5) % NEIGHBOR_PROFILES_POOL.length;
+        while (usedNeighborIdx.has(nIdx)) {
+          nIdx = (nIdx + 1) % NEIGHBOR_PROFILES_POOL.length;
+        }
+        usedNeighborIdx.add(nIdx);
+
+        const tpl = REGIONAL_SHARE_TEMPLATES[tIdx];
+        const neighbor = NEIGHBOR_PROFILES_POOL[nIdx];
+        const houseNo = ((seed + i * 11) % 24) + 1;
+        const distance = 45 + ((seed + i * 53) % 340);
+
+        generated.push({
+          id: seed + i + 1,
+          name: tpl.name,
+          quantity: tpl.quantity,
+          category: tpl.category,
+          condition: tpl.condition,
+          image: tpl.image,
+          giver: `${neighbor.name} (No. ${houseNo}, ${cleanRtRw}, ${cleanDesa})`,
+          distance: distance,
+          freshness: tpl.freshness,
+          phone: neighbor.phone,
+          notes: tpl.notes,
+          status: 'Tersedia',
+          claimerName: '',
+          timestamp: timeLabels[i % timeLabels.length],
+          isUserPost: false
+        });
+      }
+
+      return generated;
+    }
+
+    function saveRegionalSharedItems() {
+      try {
+        const storageKey = `dapurBerbagiItems_${getRegionKey()}`;
+        localStorage.setItem(storageKey, JSON.stringify(sharedItems));
+      } catch (err) {}
+    }
+
+    function loadRegionalSharedItems() {
+      const storageKey = `dapurBerbagiItems_${getRegionKey()}`;
+      try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            sharedItems = parsed.map(migrateItemImageUrl);
+            saveRegionalSharedItems();
+            return;
+          }
+        }
+      } catch (err) {}
+
+      sharedItems = generateRegionSeededItems(userProfile.desa, userProfile.rtrw);
+      saveRegionalSharedItems();
+    }
+
+    let sharedItems = [];
+
+    // Data Stok Kulkas Awal
+    let pantryItems = [
+      { id: 101, name: "Tahu Putih", quantity: "4 Kotak", category: "Protein", daysLeft: 0, addedDate: "3 hari lalu", value: 8000, weight: 0.4 },
+      { id: 102, name: "Nasi Sisa Semalam", quantity: "2 Piring", category: "Karbohidrat", daysLeft: 1, addedDate: "Kemarin", value: 10000, weight: 0.5 },
+      { id: 103, name: "Wortel", quantity: "2 Buah", category: "Sayuran", daysLeft: 2, addedDate: "4 hari lalu", value: 6000, weight: 0.3 },
+      { id: 104, name: "Telur Ayam", quantity: "6 Butir", category: "Protein", daysLeft: 6, addedDate: "2 hari lalu", value: 15000, weight: 0.4 },
+      { id: 105, name: "Daun Bawang", quantity: "3 Batang", category: "Sayuran", daysLeft: 1, addedDate: "3 hari lalu", value: 4000, weight: 0.1 },
+      { id: 106, name: "Tempe Papan", quantity: "1 Papan", category: "Protein", daysLeft: 3, addedDate: "Kemarin", value: 7000, weight: 0.3 }
+    ];
+
+    const COMMON_INGREDIENTS = [
+      "Kentang", "Tepung Terigu", "Susu Cair", "Telur Ayam",
+      "Nasi Sisa Semalam", "Ayam", "Wortel", "Tahu Putih",
+      "Tempe Papan", "Daun Bawang", "Bayam", "Pisang Matang",
+      "Pasta / Spageti", "Roti Tawar", "Keju", "Kubis / Kol",
+      "Bawang Putih", "Kecap Manis", "Saus Tomat", "Mentega / Margarin"
+    ];
+
+    const RECIPES_DATABASE = [
+      {
+        id: 101,
+        title: "Classic Creamy Mashed Potato (Kentang Tumbuk Lembut)",
+        origin: "Internasional",
+        cookTime: "20 Menit",
+        difficulty: "Mudah",
+        calories: "260 kkal",
+        description: "Kentang tumbuk lembut ala restoran Barat yang gurih dengan campuran susu cair dan mentega.",
+        mainIngredients: ["Kentang", "Susu Cair"],
+        seasonings: ["Mentega / Margarin", "Bawang Putih", "Garam & Merica"],
+        steps: [
+          "Kupas kentang, potong dadu besar agar cepat empuk, lalu rebus dalam air mendidih selama 15 menit hingga benar-benar lunak.",
+          "Tiriskan kentang selagi panas, lalu haluskan menggunakan garpu atau penghalus kentang sampai lembut tanpa gumpalan.",
+          "Masukkan mentega/margarin dan tuang susu cair hangat sedikit demi sedikit sambil diaduk hingga teksturnya creamy.",
+          "Bumbui dengan garam, merica bubuk, dan sedikit bawang putih bubuk/tumis. Sajikan hangat."
+        ]
+      },
+      {
+        id: 102,
+        title: "Homemade Pan Pizza Rumahan",
+        origin: "Internasional",
+        cookTime: "30 Menit",
+        difficulty: "Mudah",
+        calories: "420 kkal",
+        description: "Pizza teflon empuk dengan adonan tepung terigu praktis dan topping sesuai stok kulkas.",
+        mainIngredients: ["Tepung Terigu", "Keju"],
+        seasonings: ["Saus Tomat", "Ragi Instan / Baking Powder", "Minyak / Mentega", "Bawang Putih"],
+        steps: [
+          "Campur tepung terigu, sejumput garam, ragi/baking powder, dan air hangat sedikit demi sedikit hingga adonan kalis, diamkan 15 menit.",
+          "Pipihkan adonan di atas teflon yang sudah dioles tipis mentega/minyak, tusuk-tusuk permukaannya dengan garpu.",
+          "Olesi permukaan adonan dengan saus tomat dan bawang putih cincang, lalu beri topping potongan sayur/ayam/telur serta parutan keju.",
+          "Tutup teflon dan panggang dengan api sangat kecil selama 12-15 menit hingga bagian bawah kecokelatan dan keju meleleh."
+        ]
+      },
+      {
+        id: 103,
+        title: "Spaghetti / Pasta Aglio e Olio",
+        origin: "Internasional",
+        cookTime: "15 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "350 kkal",
+        description: "Olahan pasta klasik Italia yang hanya mengandalkan wangi tumisan bawang putih dan minyak.",
+        mainIngredients: ["Pasta / Spageti"],
+        seasonings: ["Bawang Putih", "Minyak Goreng / Zaitun", "Cabai / Lada", "Garam"],
+        steps: [
+          "Rebus pasta/spageti dalam air mendidih yang sudah diberi garam hingga matang (al dente), sisihkan sedikit air rebusannya.",
+          "Iris tipis bawang putih dan cabai rawit/kering.",
+          "Tumis bawang putih dengan api kecil hingga harum keemasan (jangan sampai gosong).",
+          "Masukkan pasta rebus dan 3 sdm air rebusan pasta, bumbui garam dan merica, aduk cepat hingga tercampur rata."
+        ]
+      },
+      {
+        id: 104,
+        title: "Creamy Potato & Cheese Gratin",
+        origin: "Internasional",
+        cookTime: "25 Menit",
+        difficulty: "Mudah",
+        calories: "340 kkal",
+        description: "Irisan kentang panggang teflon berlumur saus susu dan keju yang gurih dan mengenyangkan.",
+        mainIngredients: ["Kentang", "Susu Cair", "Keju"],
+        seasonings: ["Mentega / Margarin", "Bawang Putih", "Garam & Merica"],
+        steps: [
+          "Kupas kentang lalu iris tipis-tipis menyerupai koin agar cepat matang.",
+          "Lelehkan mentega di wajan, tumis bawang putih cincang, lalu tuang susu cair, garam, merica, dan sebagian keju parut.",
+          "Susun irisan kentang di dalam saus susu, tutup wajan dan masak dengan api kecil selama 15 menit hingga kentang empuk.",
+          "Taburi sisa keju di atasnya, tutup kembali 2 menit hingga meleleh sempurna."
+        ]
+      },
+      {
+        id: 105,
+        title: "French Toast Susu Kayu Manis",
+        origin: "Internasional",
+        cookTime: "10 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "290 kkal",
+        description: "Sulap roti tawar yang hampir kering menjadi sarapan lembut ala kafe.",
+        mainIngredients: ["Roti Tawar", "Telur Ayam", "Susu Cair"],
+        seasonings: ["Mentega / Margarin", "Gula Pasir / Madu"],
+        steps: [
+          "Kocok lepas telur ayam bersama susu cair dan 1 sdt gula pasir di dalam piring cekung.",
+          "Celupkan kedua sisi lembar roti tawar ke dalam campuran telur susu hingga meresap.",
+          "Panaskan mentega di atas teflon dengan api sedang, panggang roti hingga kedua sisinya kuning keemasan.",
+          "Sajikan hangat dengan taburan gula halus, madu, atau potongan pisang."
+        ]
+      },
+      {
+        id: 106,
+        title: "Chicken Teriyaki Donburi Rumahan",
+        origin: "Internasional",
+        cookTime: "20 Menit",
+        difficulty: "Mudah",
+        calories: "410 kkal",
+        description: "Tumis ayam saus teriyaki manis gurih ala Jepang yang cocok disajikan di atas nasi hangat.",
+        mainIngredients: ["Ayam", "Nasi Sisa Semalam"],
+        seasonings: ["Kecap Manis", "Bawang Putih", "Daun Bawang", "Garam & Merica"],
+        steps: [
+          "Potong daging ayam ukuran sekali suap, bumbui sedikit garam dan merica.",
+          "Tumis bawang putih cincang hingga harum, masukkan potongan ayam dan masak hingga berubah warna.",
+          "Tambahkan kecap manis, sedikit saus tiram/gula, dan 4 sdm air. Masak hingga kuah mengental mengkilap.",
+          "Sajikan di atas nasi hangat dengan taburan irisan daun bawang."
+        ]
+      },
+      {
+        id: 107,
+        title: "Cheese Omelette Lipat Ala Hotel",
+        origin: "Internasional",
+        cookTime: "8 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "250 kkal",
+        description: "Telur dadar lembut berisi keju meleleh dengan campuran sedikit susu cair.",
+        mainIngredients: ["Telur Ayam", "Keju", "Susu Cair"],
+        seasonings: ["Mentega / Margarin", "Garam & Merica"],
+        steps: [
+          "Kocok lepas telur ayam bersama 2 sdm susu cair, sejumput garam, dan merica hingga tercampur rata.",
+          "Lelehkan mentega di teflon anti lengket dengan api kecil.",
+          "Tuang adonan telur, aduk perlahan bagian tengahnya saat mulai mengental, lalu taburi keju parut.",
+          "Lipat omelette menjadi setengah lingkaran dan angkat selagi bagian dalamnya masih lembut."
+        ]
+      },
+      {
+        id: 108,
+        title: "Spanish Tortilla (Dadar Kentang Tebal)",
+        origin: "Internasional",
+        cookTime: "20 Menit",
+        difficulty: "Mudah",
+        calories: "310 kkal",
+        description: "Hidangan telur dadar tebal khas Spanyol dengan isian irisan kentang lembut yang mengenyangkan.",
+        mainIngredients: ["Kentang", "Telur Ayam"],
+        seasonings: ["Bawang Putih", "Minyak Goreng", "Garam & Merica"],
+        steps: [
+          "Kupas kentang dan iris tipis, masak di wajan dengan sedikit minyak dan bawang putih hingga kentang empuk.",
+          "Kocok lepas telur ayam dengan garam dan merica di mangkuk besar, lalu masukkan kentang yang sudah empuk.",
+          "Tuang kembali campuran kentang dan telur ke wajan anti lengket dengan api kecil.",
+          "Masak hingga bagian bawah matang kokoh, balik menggunakan piring, lalu masak sisi satunya hingga matang."
+        ]
+      },
+      {
+        id: 1,
+        title: "Nasi Goreng Kampung Anti-Mubazir",
+        origin: "Nusantara",
+        cookTime: "15 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "380 kkal",
+        description: "Solusi terbaik menyulap nasi sisa semalam dan potongan sayuran kulkas menjadi sarapan lezat.",
+        mainIngredients: ["Nasi Sisa Semalam", "Telur Ayam"],
+        seasonings: ["Wortel", "Daun Bawang", "Bawang Putih", "Kecap Manis"],
+        steps: [
+          "Cincang halus bawang putih, potong dadu kecil wortel, dan iris tipis daun bawang.",
+          "Panaskan 2 sdm minyak, tumis bawang putih hingga harum lalu masukkan telur dan buat orak-arik.",
+          "Masukkan wortel, tumis sebentar hingga agak layu.",
+          "Masukkan nasi sisa semalam, aduk rata dengan api besar agar tidak menggumpal.",
+          "Tambahkan kecap manis, garam, merica, dan kaldu jamur. Masukkan daun bawang sesaat sebelum diangkat."
+        ]
+      },
+      {
+        id: 2,
+        title: "Perkedel Tahu Wortel Krispi",
+        origin: "Nusantara",
+        cookTime: "20 Menit",
+        difficulty: "Mudah",
+        calories: "240 kkal",
+        description: "Lauk pendamping maupun camilan gurih dari tahu yang hampir asam dan wortel.",
+        mainIngredients: ["Tahu Putih", "Wortel"],
+        seasonings: ["Telur Ayam", "Daun Bawang", "Bawang Putih"],
+        steps: [
+          "Hancurkan tahu putih menggunakan garpu hingga halus, peras sedikit airnya jika terlalu basah.",
+          "Parut wortel dan iris halus daun bawang serta bawang putih.",
+          "Campurkan tahu, wortel, daun bawang, 1 butir telur, garam, dan lada bubuk.",
+          "Bentuk bulat pipih menggunakan sendok, lalu goreng dalam minyak panas hingga kuning keemasan."
+        ]
+      },
+      {
+        id: 3,
+        title: "Orak-Arik Sayur Telur Praktis",
+        origin: "Nusantara",
+        cookTime: "10 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "210 kkal",
+        description: "Menu kilat 10 menit untuk menghabiskan sisa sayuran di laci kulkas.",
+        mainIngredients: ["Telur Ayam", "Wortel", "Kubis / Kol"],
+        seasonings: ["Daun Bawang", "Bawang Putih", "Kecap Manis"],
+        steps: [
+          "Iris tipis wortel, kubis, dan daun bawang.",
+          "Tumis bawang putih cincang hingga wangi, sisihkan di pinggir wajan.",
+          "Ceplok telur dan orak-arik hingga matang.",
+          "Masukkan semua sayuran, beri sedikit air, garam, dan kecap manis. Masak cepat hingga sayur layu."
+        ]
+      },
+      {
+        id: 4,
+        title: "Orek Tempe Kecap Pedas Manis",
+        origin: "Nusantara",
+        cookTime: "15 Menit",
+        difficulty: "Mudah",
+        calories: "290 kkal",
+        description: "Lauk awet yang cocok untuk menghabiskan stok tempe dan bumbu dasar.",
+        mainIngredients: ["Tempe Papan"],
+        seasonings: ["Bawang Putih", "Kecap Manis", "Daun Bawang"],
+        steps: [
+          "Potong tempe berbentuk korek api kecil, goreng setengah kering lalu tiriskan.",
+          "Tumis irisan bawang putih dan cabai (opsional) hingga harum.",
+          "Masukkan tempe, tuang kecap manis dan sedikit air, aduk hingga bumbu meresap dan mengkaramel.",
+          "Taburi irisan daun bawang sebelum disajikan."
+        ]
+      },
+      {
+        id: 5,
+        title: "Fluffy Banana Pancake (Pancake Pisang)",
+        origin: "Internasional",
+        cookTime: "10 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "190 kkal",
+        description: "Jangan buang pisang yang kulitnya sudah menghitam! Olah jadi camilan sehat ala kafe.",
+        mainIngredients: ["Pisang Matang", "Telur Ayam"],
+        seasonings: ["Tepung Terigu", "Mentega / Margarin"],
+        steps: [
+          "Kupas pisang matang, lumatkan dengan garpu di mangkuk hingga halus.",
+          "Kocok lepas telur ayam, lalu campurkan ke dalam adonan pisang hingga rata (tambahkan 2 sdm tepung terigu agar lebih empuk).",
+          "Panaskan teflon anti lengket dengan sedikit margarin.",
+          "Tuang 1 sendok sayur adonan, masak dengan api kecil hingga kecokelatan di kedua sisi."
+        ]
+      },
+      {
+        id: 6,
+        title: "Bakwan Sayur Renyah Tepung Terigu",
+        origin: "Nusantara",
+        cookTime: "15 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "270 kkal",
+        description: "Gorengan hangat renyah berbahan dasar tepung terigu dan aneka potongan sayur kulkas.",
+        mainIngredients: ["Tepung Terigu", "Wortel", "Kubis / Kol"],
+        seasonings: ["Daun Bawang", "Bawang Putih", "Garam & Merica"],
+        steps: [
+          "Iris halus wortel, kubis, dan daun bawang dalam satu wadah.",
+          "Masukkan tepung terigu, bawang putih halus, garam, merica, dan air secukupnya hingga menjadi adonan kental.",
+          "Panaskan minyak goreng yang cukup banyak di wajan.",
+          "Sendokkan adonan ke pinggir wajan, goreng hingga kuning keemasan dan renyah."
+        ]
+      },
+      {
+        id: 7,
+        title: "Tumis Bayam Bawang Putih Praktis",
+        origin: "Nusantara",
+        cookTime: "8 Menit",
+        difficulty: "Sangat Mudah",
+        calories: "120 kkal",
+        description: "Olahan sayur hijau segar kaya zat besi yang matang dalam waktu kurang dari 10 menit.",
+        mainIngredients: ["Bayam"],
+        seasonings: ["Bawang Putih", "Garam & Kaldu Jamur"],
+        steps: [
+          "Petiki daun bayam dan batang mudanya, cuci bersih lalu tiriskan.",
+          "Geprek dan cincang bawang putih, tumis dengan 1 sdm minyak hingga harum.",
+          "Masukkan bayam, aduk cepat dengan api besar agar warna hijau tetap segar.",
+          "Tambahkan garam dan sedikit kaldu, angkat segera setelah daun layu."
+        ]
+      }
+    ];
+
+    // Daftar Hadiah Penukaran Poin Kebaikan
+    const REWARDS_CATALOG = [
+      {
+        id: 1,
+        title: "Voucher Belanja Sayur Rp 15.000",
+        partner: "Warung Sayur Bu Tini (Mitra RW)",
+        cost: 100,
+        nominalRp: 15000,
+        icon: "fa-basket-shopping",
+        desc: "Berlaku untuk pembelian sayur segar, tahu, tempe, atau bumbu dapur di warung mitra."
+      },
+      {
+        id: 2,
+        title: "Voucher Sembako Hemat Rp 25.000",
+        partner: "Toko Kelontong Berkah Kelurahan",
+        cost: 180,
+        nominalRp: 25000,
+        icon: "fa-bag-shopping",
+        desc: "Potongan langsung untuk pembelian beras, minyak goreng, telur, atau gula pasir."
+      },
+      {
+        id: 3,
+        title: "Paket Wadah Kedap Udara (Food Prep)",
+        partner: "Bank Sampah & Koperasi Warga",
+        cost: 250,
+        nominalRp: 35000,
+        icon: "fa-box-open",
+        desc: "Set 3 kotak penyimpanan kulkas agar sayuran dan lauk tahan segar 2x lebih lama."
+      },
+      {
+        id: 4,
+        title: "Bibit Cabai & Tomat + Pupuk Kompos",
+        partner: "Kelompok Wanita Tani (KWT)",
+        cost: 80,
+        nominalRp: 10000,
+        icon: "fa-seedling",
+        desc: "Paket berkebun di pekarangan rumah dari hasil olahan kompos limbah dapur warga."
+      }
+    ];
+
+    // Konfigurasi Tema Warna (Default: Soft Pink)
+    const THEMES = {
+      pink: {
+        main: '#ec4899', hover: '#db2777', soft: '#fdf2f8', softHover: '#fce7f3', border: '#fbcfe8', text: '#be185d',
+        banner: 'from-pink-500 via-rose-400 to-amber-400',
+        card: 'from-pink-500 to-rose-500'
+      },
+      sage: {
+        main: '#4A6B5D', hover: '#3B574B', soft: '#E8EFEA', softHover: '#DCE7DF', border: '#C5D8CC', text: '#3B574B',
+        banner: 'from-[#4A6B5D] via-[#5B7F70] to-[#7C9D8E]',
+        card: 'from-[#4A6B5D] to-[#3B574B]'
+      },
+      ocean: {
+        main: '#0284c7', hover: '#0369a1', soft: '#f0f9ff', softHover: '#e0f2fe', border: '#bae6fd', text: '#0369a1',
+        banner: 'from-sky-600 via-cyan-500 to-teal-400',
+        card: 'from-sky-600 to-cyan-600'
+      },
+      terracotta: {
+        main: '#D96B43', hover: '#C25934', soft: '#FBECE6', softHover: '#F7DDD2', border: '#F3C7B6', text: '#B54E2A',
+        banner: 'from-[#D96B43] via-[#E38562] to-amber-500',
+        card: 'from-[#D96B43] to-[#B54E2A]'
+      }
+    };
+
+    // State Aplikasi
+    let activeTab = 'berbagi';
+    let categoryFilter = 'Semua';
+    let sortByDistance = false;
+    let selectedIngredients = ["Kentang", "Susu Cair", "Telur Ayam"];
+    let mainIngredientFilter = '';
+    let onlyMainMatch = false;
+    let currentModalRecipe = null;
+    let currentTheme = 'pink';
+    let isMitraMode = false;
+
+    // Kredensial Khusus Mitra UMKM & Admin Kelurahan (Tidak ditampilkan di UI)
+    const MITRA_CREDENTIALS = {
+      id: "MITRA-KELURAHAN",
+      pin: "DLH2026"
+    };
+
+    // State Profil & Lokasi Pengguna (Zero-State: Semua mulai dari 0, data disimpan lokal di browser)
+    let userProfile = {
+      isLoggedIn: false,
+      name: "Warga DapurBerbagi",
+      phone: "",
+      kabupaten: "",
+      kecamatan: "",
+      desa: "",
+      rtrw: "",
+      avatarUrl: "",
+      bannerUrl: ""
+    };
+
+    // Zero-State: Mulai dari 0 (Bertambah nyata hanya saat user melakukan aksi di web)
+    let stats = {
+      moneySaved: 0,
+      foodSavedKg: 0,
+      userPoints: 0,
+      sharedCount: 0,
+      redeemedCount: 0
+    };
+
+    let pointHistory = [];
+
+    // Dompet Voucher Unik Warga (Kosong saat awal, terisi saat warga menukar poin)
+    let myVouchers = [];
+
+    // Helper: Format Rupiah
+    function formatRupiah(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    // Helper: Cek apakah profil & alamat sudah lengkap
+    function isAddressComplete() {
+      return Boolean(
+        userProfile.isLoggedIn &&
+        userProfile.name && userProfile.name.trim() !== "" &&
+        userProfile.kabupaten && userProfile.kabupaten.trim() !== "" &&
+        userProfile.kecamatan && userProfile.kecamatan.trim() !== "" &&
+        userProfile.desa && userProfile.desa.trim() !== "" &&
+        userProfile.rtrw && userProfile.rtrw.trim() !== ""
+      );
+    }
+
+    // --- PERSISTENCE (LOCAL STORAGE) ---
+    function saveState() {
+      try {
+        localStorage.setItem('dapurBerbagiDataV3', JSON.stringify({
+          userProfile,
+          stats,
+          pointHistory,
+          myVouchers,
+          currentTheme,
+          pantryItems
+        }));
+      } catch (err) {}
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('dapurBerbagiDataV3');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.userProfile) userProfile = { ...userProfile, ...parsed.userProfile };
+          if (parsed.stats) stats = { ...stats, ...parsed.stats };
+          if (Array.isArray(parsed.pointHistory)) pointHistory = parsed.pointHistory;
+          if (Array.isArray(parsed.myVouchers)) myVouchers = parsed.myVouchers;
+          if (parsed.currentTheme && THEMES[parsed.currentTheme]) currentTheme = parsed.currentTheme;
+          if (Array.isArray(parsed.pantryItems) && parsed.pantryItems.length > 0) pantryItems = parsed.pantryItems;
+        }
+      } catch (err) {}
+      migrateAllStoredRegionalItems();
+      loadRegionalSharedItems();
+    }
+
+    // Helper: Toast Notification
+    let toastTimeout = null;
+    function showToast(message) {
+      const toastEl = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-message');
+      msgEl.textContent = message;
+      toastEl.classList.remove('hidden');
+      toastEl.classList.add('flex');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.add('hidden');
+        toastEl.classList.remove('flex');
+      }, 3600);
+    }
+
+    // Helper: Tab Switching
+    function switchTab(tabName) {
+      if (isMitraMode && tabName !== 'mitra') {
+        showToast("Anda sedang berada di Portal Mitra UMKM. Klik 'Keluar Portal Mitra' di atas untuk kembali ke tampilan warga.");
+        return;
+      }
+
+      activeTab = tabName;
+      ['berbagi', 'resep', 'kulkas', 'profil'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (!view || !btn) return;
+        if (t === tabName) {
+          view.classList.remove('hidden');
+          view.classList.remove('tab-view-animate');
+          void view.offsetWidth;
+          view.classList.add('tab-view-animate');
+          btn.classList.add('active');
+        } else {
+          view.classList.add('hidden');
+          btn.classList.remove('active');
+        }
+      });
+
+      const mitraSec = document.getElementById('section-mitra');
+      if (mitraSec) mitraSec.classList.add('hidden');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- UPDATE DASHBOARD & PROFIL UI ---
+    function updateStatsUI() {
+      const addressReady = isAddressComplete();
+
+      if (addressReady) {
+        document.getElementById('stat-money').textContent = formatRupiah(stats.moneySaved);
+        document.getElementById('stat-food').textContent = `${stats.foodSavedKg} Kg`;
+      } else {
+        document.getElementById('stat-money').textContent = '🔒 Lengkapi Alamat';
+        document.getElementById('stat-food').textContent = '🔒 Lengkapi Alamat';
+      }
+
+      document.getElementById('header-points').textContent = stats.userPoints;
+      document.getElementById('header-shared-count').textContent = `${stats.sharedCount}x Berbagi`;
+      document.getElementById('available-count-badge').textContent = sharedItems.filter(i => i.status === 'Tersedia').length;
+
+      const badgeTitle = stats.sharedCount >= 5 ? "Pahlawan Pangan Utama" : "Ibu Bijak Anti-Mubazir";
+      document.getElementById('header-badge-title').textContent = badgeTitle;
+      document.getElementById('profile-badge-title').textContent = badgeTitle;
+
+      document.getElementById('profile-points-balance').textContent = stats.userPoints;
+      document.getElementById('profile-shared-count').textContent = `${stats.sharedCount} Kali`;
+      document.getElementById('profile-redeemed-count').textContent = `${stats.redeemedCount} Voucher`;
+
+      const alertDot = document.getElementById('pantry-alert-dot');
+      if (pantryItems.filter(i => i.daysLeft <= 1).length > 0) {
+        alertDot.classList.remove('hidden');
+      } else {
+        alertDot.classList.add('hidden');
+      }
+    }
+
+    function updateProfileUI() {
+      const greetingEl = document.getElementById('header-greeting-name');
+      const regionBadgeEl = document.getElementById('header-region-badge');
+      const fullAddrHeaderEl = document.getElementById('header-full-address').querySelector('span');
+      const bannerShortEl = document.getElementById('banner-location-short');
+      const displayNameEl = document.getElementById('profile-display-name');
+      const profileAddrEl = document.getElementById('profile-full-address');
+      const statusPillEl = document.getElementById('login-status-pill');
+      const initialsEl = document.getElementById('profile-avatar-initials');
+      const logoutBtn = document.getElementById('logout-btn');
+      const tabProfilLabel = document.getElementById('tab-profil-label');
+
+      const avatarImg = document.getElementById('profile-avatar-img');
+      if (userProfile.avatarUrl) {
+        avatarImg.src = userProfile.avatarUrl;
+        avatarImg.classList.remove('hidden');
+        initialsEl.classList.add('hidden');
+      } else {
+        avatarImg.src = '';
+        avatarImg.classList.add('hidden');
+        initialsEl.classList.remove('hidden');
+      }
+
+      const bannerImg = document.getElementById('profile-banner-img');
+      const bannerPattern = document.getElementById('profile-banner-pattern');
+      if (userProfile.bannerUrl) {
+        bannerImg.src = userProfile.bannerUrl;
+        bannerImg.classList.remove('hidden');
+        bannerPattern.classList.add('hidden');
+      } else {
+        bannerImg.src = '';
+        bannerImg.classList.add('hidden');
+        bannerPattern.classList.remove('hidden');
+      }
+
+      if (userProfile.isLoggedIn && userProfile.name) {
+        greetingEl.textContent = userProfile.name;
+        displayNameEl.textContent = userProfile.name;
+        tabProfilLabel.textContent = userProfile.name.split(' ')[0];
+
+        const words = userProfile.name.trim().split(/\s+/);
+        const initials = words.length >= 2
+          ? (words[0][0] + words[1][0]).toUpperCase()
+          : userProfile.name.slice(0, 2).toUpperCase();
+        initialsEl.textContent = initials;
+
+        regionBadgeEl.textContent = `${userProfile.rtrw} • ${userProfile.desa}`;
+        bannerShortEl.textContent = `${userProfile.rtrw}, ${userProfile.desa}`;
+
+        const fullAddress = `${userProfile.rtrw}, ${userProfile.desa}, ${userProfile.kecamatan}, ${userProfile.kabupaten}`;
+        fullAddrHeaderEl.textContent = fullAddress;
+        profileAddrEl.textContent = `${fullAddress}${userProfile.phone ? ' • WA: ' + userProfile.phone : ''}`;
+
+        statusPillEl.textContent = "Terverifikasi Warga";
+        statusPillEl.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+        logoutBtn.classList.remove('hidden');
+
+        document.getElementById('login-name').value = userProfile.name;
+        document.getElementById('login-phone').value = userProfile.phone || '';
+        setRegionValues('login', userProfile.kabupaten, userProfile.kecamatan, userProfile.desa);
+        document.getElementById('login-rtrw').value = userProfile.rtrw;
+        document.getElementById('login-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Perbarui Profil & Lokasi`;
+      } else {
+        greetingEl.textContent = "Warga";
+        displayNameEl.textContent = "Warga DapurBerbagi";
+        tabProfilLabel.textContent = "Profil";
+        initialsEl.textContent = "WG";
+        regionBadgeEl.textContent = "Wilayah Belum Diatur";
+        bannerShortEl.textContent = "Belum Login Wilayah";
+        fullAddrHeaderEl.textContent = "Alamat lengkap belum dilengkapi";
+        profileAddrEl.textContent = "Silakan masuk & lengkapi alamat Kabupaten hingga RT/RW di bawah ini";
+        statusPillEl.textContent = "Belum Login";
+        statusPillEl.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800";
+        logoutBtn.classList.add('hidden');
+        setRegionValues('login', '', '', '');
+      }
+
+      updateStatsUI();
+    }
+
+    function checkSplashScreen() {
+      const splash = document.getElementById('auth-splash-screen');
+      if (!splash) return;
+      if (isAddressComplete() || isMitraMode) {
+        splash.classList.add('hidden');
+        document.body.style.overflow = '';
+      } else {
+        initRegionDropdowns('splash');
+        splash.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function openAboutWebModal() {
+      const modal = document.getElementById('about-web-modal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAboutWebModal() {
+      const modal = document.getElementById('about-web-modal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleSplashLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('splash-name').value.trim();
+      const phone = document.getElementById('splash-phone').value.trim();
+      const { kabupaten, kecamatan, desa } = getRegionValues('splash');
+      const rtrw = document.getElementById('splash-rtrw').value.trim();
+
+      if (!name || !phone || !kabupaten || !kecamatan || !desa || !rtrw) {
+        showToast("Mohon lengkapi seluruh data identitas dan alamat RT/RW terlebih dahulu.");
+        return;
+      }
+
+      userProfile = {
+        ...userProfile,
+        isLoggedIn: true,
+        name,
+        phone,
+        kabupaten,
+        kecamatan,
+        desa,
+        rtrw
+      };
+
+      loadRegionalSharedItems();
+      saveState();
+      updateProfileUI();
+      renderSharedItems();
+      checkSplashScreen();
+      showToast(`Selamat datang, ${name}! Menampilkan etalase berbagi warga ${rtrw}, ${desa}.`);
+    }
+
+    function handleUserLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('login-name').value.trim();
+      const phone = document.getElementById('login-phone').value.trim();
+      const { kabupaten, kecamatan, desa } = getRegionValues('login');
+      const rtrw = document.getElementById('login-rtrw').value.trim();
+
+      if (!name || !kabupaten || !kecamatan || !desa || !rtrw) {
+        showToast("Mohon lengkapi Nama dan seluruh detail alamat Kabupaten, Kecamatan, Desa, serta RT/RW.");
+        return;
+      }
+
+      userProfile = {
+        ...userProfile,
+        isLoggedIn: true,
+        name,
+        phone,
+        kabupaten,
+        kecamatan,
+        desa,
+        rtrw
+      };
+
+      loadRegionalSharedItems();
+      saveState();
+      updateProfileUI();
+      renderSharedItems();
+      checkSplashScreen();
+      showToast(`Profil diperbarui! Etalase warga kini menyesuaikan wilayah ${rtrw}, ${desa}.`);
+    }
+
+    function handleLogout() {
+      userProfile = {
+        isLoggedIn: false,
+        name: "Warga DapurBerbagi",
+        phone: "",
+        kabupaten: "",
+        kecamatan: "",
+        desa: "",
+        rtrw: "",
+        avatarUrl: "",
+        bannerUrl: ""
+      };
+      document.getElementById('login-name').value = '';
+      document.getElementById('login-phone').value = '';
+      setRegionValues('login', '', '', '');
+      document.getElementById('login-rtrw').value = '';
+      document.getElementById('login-submit-btn').innerHTML = `<i class="fa-solid fa-check-circle"></i> Masuk & Simpan Lokasi`;
+      saveState();
+      updateProfileUI();
+      checkSplashScreen();
+      showToast("Anda telah keluar dari akun warga.");
+    }
+
+    // --- UPLOAD FOTO PROFIL & BANNER ---
+    function handleImageUpload(event, targetType) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast("Format file tidak valid. Pilih gambar JPG, PNG, atau WebP.");
+        return;
+      }
+
+      if (file.size > 4 * 1024 * 1024) {
+        showToast("Ukuran gambar terlalu besar (maksimal 4 MB).");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = targetType === 'avatar' ? 300 : 900;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height >= width && height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+          if (targetType === 'avatar') {
+            userProfile.avatarUrl = compressedDataUrl;
+            showToast("Foto profil berhasil diperbarui!");
+          } else {
+            userProfile.bannerUrl = compressedDataUrl;
+            showToast("Foto banner profil berhasil diperbarui!");
+          }
+
+          saveState();
+          updateProfileUI();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    // --- THEME SWITCHER ---
+    function applyTheme(themeKey) {
+      const theme = THEMES[themeKey] || THEMES.pink;
+      currentTheme = themeKey;
+      const root = document.documentElement;
+      root.style.setProperty('--accent-main', theme.main);
+      root.style.setProperty('--accent-hover', theme.hover);
+      root.style.setProperty('--accent-soft', theme.soft);
+      root.style.setProperty('--accent-soft-hover', theme.softHover);
+      root.style.setProperty('--accent-border', theme.border);
+      root.style.setProperty('--accent-text', theme.text);
+
+      const bannerBg = document.getElementById('profile-banner-bg');
+      if (bannerBg) {
+        bannerBg.className = `h-36 sm:h-44 bg-gradient-to-r ${theme.banner} relative overflow-hidden`;
+      }
+      const pointsCard = document.getElementById('points-gradient-card');
+      if (pointsCard) {
+        pointsCard.className = `bg-gradient-to-br ${theme.card} text-white p-5 rounded-2xl shadow-md`;
+      }
+      saveState();
+      renderCategoryFilters();
+    }
+
+    // --- RENDER & LOGIC FEATURE 1: BERBAGI & TUKAR BAHAN TETANGGA ---
+    function renderCategoryFilters() {
+      const container = document.getElementById('category-filters');
+      const categories = ['Semua', 'Sayuran', 'Lauk Pauk', 'Buah', 'Makanan Matang', 'Bumbu'];
+
+      let html = categories.map(cat => {
+        const isActive = categoryFilter === cat;
+        return `
+          <button
+            onclick="setCategoryFilter('${cat}')"
+            class="px-3.5 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
+              isActive
+                ? 'theme-btn-main shadow-sm'
+                : 'bg-[#F4F0E8] text-[#5C6F65] hover:bg-[#EAE3D5]'
+            }"
+          >
+            ${cat}
+          </button>
+        `;
+      }).join('');
+
+      html += `
+        <button
+          onclick="toggleSortByDistance()"
+          class="px-3.5 py-2 rounded-full text-xs font-bold border transition flex items-center gap-1.5 cursor-pointer ${
+            sortByDistance
+              ? 'theme-btn-soft'
+              : 'bg-white border-[#D6CEC0] text-[#5C6F65]'
+          }"
+        >
+          <i class="fa-solid fa-location-dot"></i>
+          Terdekat
+        </button>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function setCategoryFilter(cat) {
+      categoryFilter = cat;
+      renderCategoryFilters();
+      renderSharedItems();
+    }
+
+    function toggleSortByDistance() {
+      sortByDistance = !sortByDistance;
+      renderCategoryFilters();
+      renderSharedItems();
+    }
+
+    function renderSharedItems() {
+      const grid = document.getElementById('shared-items-grid');
+      let list = [...sharedItems];
+
+      if (categoryFilter !== 'Semua') {
+        list = list.filter(item => item.category === categoryFilter);
+      }
+      if (sortByDistance) {
+        list.sort((a, b) => a.distance - b.distance);
+      }
+
+      grid.innerHTML = list.map(item => {
+        const itemImage = item.image || CATEGORY_DEFAULT_IMAGES[item.category] || CATEGORY_DEFAULT_IMAGES['Sayuran'];
+        let actionHtml = '';
+        let statusRibbonHtml = '';
+
+        if (item.status === 'Selesai Diambil') {
+          statusRibbonHtml = `
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-600 text-white shadow-sm flex items-center gap-1">
+              <i class="fa-solid fa-circle-check"></i> Selesai Diambil
+            </span>
+          `;
+          actionHtml = `
+            <div class="w-full py-3 px-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-xs flex items-center justify-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+              <span>Sudah Diambil${item.claimerName ? ' oleh ' + item.claimerName : ''}</span>
+            </div>
+          `;
+        } else if (item.status === 'Menunggu Diambil') {
+          statusRibbonHtml = `
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-500 text-white shadow-sm flex items-center gap-1">
+              <i class="fa-solid fa-hourglass-half"></i> Menunggu Diambil
+            </span>
+          `;
+          actionHtml = `
+            <div class="space-y-2">
+              <button
+                onclick="handleConfirmPickedUp(${item.id})"
+                class="w-full py-2.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+              >
+                <i class="fa-solid fa-check-double"></i>
+                Konfirmasi Sudah Diambil
+              </button>
+              <button
+                onclick="handleWhatsAppClaim(${item.id})"
+                class="w-full py-2 px-3 rounded-xl bg-[#F4F0E8] hover:bg-[#EAE3D5] text-[#4A5D53] font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+              >
+                <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                Chat Ulang via WhatsApp
+              </button>
+            </div>
+          `;
+        } else {
+          actionHtml = `
+            <button
+              onclick="handleWhatsAppClaim(${item.id})"
+              class="w-full py-3 px-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition cursor-pointer bg-[#25D366] hover:bg-[#1EBE5D] text-white shadow-sm"
+            >
+              <i class="fa-brands fa-whatsapp text-base"></i>
+              Ambil / Hubungi via WhatsApp
+            </button>
+          `;
+        }
+
+        return `
+          <div class="bg-white rounded-3xl overflow-hidden border border-[#E6DFD3] shadow-sm hover:shadow-md transition flex flex-col justify-between ${item.status === 'Selesai Diambil' ? 'opacity-80' : ''}">
+            <div>
+              <!-- Foto Bahan Makanan -->
+              <div class="relative w-full h-[165px] bg-[#F4F0E8] overflow-hidden">
+                <img
+                  src="${itemImage}"
+                  referrerpolicy="no-referrer"
+                  onerror="handleFoodImageError(this, '${item.category}')"
+                  alt="${item.name}"
+                  class="w-full h-full object-cover"
+                />
+                <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
+                  <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-white/95 backdrop-blur-xs text-[#2C3E35] shadow-xs">
+                    ${item.category}
+                  </span>
+                  ${statusRibbonHtml}
+                </div>
+                <div class="absolute bottom-2.5 right-3">
+                  <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-black/60 backdrop-blur-xs text-white flex items-center gap-1">
+                    <i class="fa-solid fa-location-dot text-pink-300"></i>
+                    ${item.distance}m • ${item.timestamp}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Detail Konten -->
+              <div class="p-5">
+                <h3 class="text-lg font-extrabold text-[#2C3E35] leading-snug">${item.name}</h3>
+                <p class="text-sm font-bold theme-text mt-0.5">Jumlah: ${item.quantity}</p>
+
+                <div class="mt-2">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+                    <i class="fa-solid fa-tag text-emerald-600"></i>
+                    Kondisi: ${item.condition || item.freshness}
+                  </span>
+                </div>
+
+                <p class="text-sm text-[#5C6F65] mt-3 bg-[#FAF7F2] p-3 rounded-2xl border border-[#EFE9DD]">
+                  "${item.notes}"
+                </p>
+
+                <div class="mt-4 space-y-1.5 text-xs">
+                  <div class="flex items-center gap-2 text-[#4A6B5D] font-semibold">
+                    <i class="fa-regular fa-clock theme-text shrink-0"></i>
+                    <span>${item.freshness}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-[#5C6F65]">
+                    <i class="fa-solid fa-hand-holding-heart text-[#4A6B5D] shrink-0"></i>
+                    <span>Dibagikan oleh: <strong>${item.giver}</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="px-5 pb-5 pt-3 border-t border-[#EFE9DD]">
+              ${actionHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleWhatsAppClaim(id) {
+      const item = sharedItems.find(el => el.id === id);
+      if (!item) return;
+      if (item.status === 'Selesai Diambil') {
+        showToast("Bahan makanan ini sudah selesai diambil tetangga.");
+        return;
+      }
+
+      if (item.status === 'Tersedia') {
+        item.status = 'Menunggu Diambil';
+        item.claimerName = isAddressComplete() ? userProfile.name : 'Tetangga Sekitar';
+        saveRegionalSharedItems();
+      }
+
+      updateStatsUI();
+      renderSharedItems();
+
+      const senderLabel = isAddressComplete()
+        ? `${userProfile.name} (${userProfile.rtrw}, ${userProfile.desa})`
+        : "tetangga dari DapurBerbagi";
+
+      const message = encodeURIComponent(
+        `Halo ${item.giver.split(' (')[0]}, saya ${senderLabel}. Apakah "${item.name} (${item.quantity})" masih tersedia? Saya berminat mengambilnya sekarang.`
+      );
+      window.open(`https://wa.me/${item.phone}?text=${message}`, '_blank');
+      showToast(`Status diubah ke "Menunggu Diambil". Silakan klik "Konfirmasi Sudah Diambil" setelah barang diterima!`);
+    }
+
+    function handleConfirmPickedUp(id) {
+      const item = sharedItems.find(el => el.id === id);
+      if (!item || item.status === 'Selesai Diambil') return;
+
+      item.status = 'Selesai Diambil';
+      if (!item.claimerName) {
+        item.claimerName = isAddressComplete() ? userProfile.name : 'Warga Sekitar';
+      }
+
+      stats.userPoints += 10;
+      pointHistory.unshift({
+        type: 'earn',
+        title: `Konfirmasi Pengambilan "${item.name}" Selesai`,
+        points: 10,
+        date: 'Baru saja'
+      });
+
+      saveRegionalSharedItems();
+      saveState();
+      updateStatsUI();
+      renderSharedItems();
+      renderProfileHistoryAndRewards();
+      showToast(`Mantap! Barang dikonfirmasi sudah diambil (+10 Poin Kebaikan).`);
+    }
+
+    // --- UPLOAD FOTO PADA MODAL BAGIKAN BAHAN ---
+    let pendingSharePhotoDataUrl = '';
+
+    function handleSharePhotoChange(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showToast("Format file harus berupa gambar (JPG, PNG, atau WebP).");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("Ukuran foto terlalu besar (maksimal 5 MB).");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 720;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height >= width && height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          pendingSharePhotoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+          const previewImg = document.getElementById('share-photo-preview-img');
+          const placeholderIcon = document.getElementById('share-photo-placeholder-icon');
+          const clearBtn = document.getElementById('share-photo-clear-btn');
+          const btnLabel = document.getElementById('share-photo-btn-label');
+
+          previewImg.src = pendingSharePhotoDataUrl;
+          previewImg.classList.remove('hidden');
+          placeholderIcon.classList.add('hidden');
+          clearBtn.classList.remove('hidden');
+          btnLabel.textContent = "Ganti Foto";
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearSharePhoto() {
+      pendingSharePhotoDataUrl = '';
+      const input = document.getElementById('share-photo-input');
+      const previewImg = document.getElementById('share-photo-preview-img');
+      const placeholderIcon = document.getElementById('share-photo-placeholder-icon');
+      const clearBtn = document.getElementById('share-photo-clear-btn');
+      const btnLabel = document.getElementById('share-photo-btn-label');
+
+      if (input) input.value = '';
+      if (previewImg) {
+        previewImg.src = '';
+        previewImg.classList.add('hidden');
+      }
+      if (placeholderIcon) placeholderIcon.classList.remove('hidden');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (btnLabel) btnLabel.textContent = "Pilih / Ambil Foto";
+    }
+
+    function openShareModalFromHeader() {
+      switchTab('berbagi');
+      openShareModal();
+    }
+
+    function openShareModal() {
+      const modal = document.getElementById('share-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeShareModal() {
+      const modal = document.getElementById('share-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleAddShareItem(e) {
+      e.preventDefault();
+      const name = document.getElementById('share-name').value.trim();
+      const qty = document.getElementById('share-qty').value.trim();
+      const cat = document.getElementById('share-cat').value;
+      const condition = document.getElementById('share-condition').value.trim();
+      const freshness = document.getElementById('share-freshness').value.trim();
+      const notes = document.getElementById('share-notes').value.trim();
+
+      const rawVal = parseInt(document.getElementById('share-value').value, 10);
+      const itemValue = (!isNaN(rawVal) && rawVal > 0) ? rawVal : 10000;
+      const itemWeight = parseFloat(document.getElementById('share-weight').value) || 0.5;
+
+      if (!name || !qty) return;
+
+      const giverIdentity = isAddressComplete()
+        ? `${userProfile.name} (${userProfile.rtrw}, ${userProfile.desa})`
+        : "Warga Sekitar (Belum Atur Lokasi)";
+
+      const cleanPhone = (userProfile.phone || '6281200000000').replace(/[^0-9]/g, '');
+      const waPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : (cleanPhone || '6281200000000');
+      const finalImage = pendingSharePhotoDataUrl || CATEGORY_DEFAULT_IMAGES[cat] || CATEGORY_DEFAULT_IMAGES['Sayuran'];
+
+      sharedItems.unshift({
+        id: Date.now(),
+        name,
+        quantity: qty,
+        category: cat,
+        condition: condition || freshness || "Masih segar dan layak konsumsi",
+        image: finalImage,
+        giver: giverIdentity,
+        distance: 10,
+        freshness: freshness || "Baik digunakan hari ini",
+        phone: waPhone,
+        notes: notes || "Silakan diambil ke rumah ya Bu, masih bagus.",
+        status: "Tersedia",
+        claimerName: "",
+        timestamp: "Baru saja",
+        isUserPost: true
+      });
+
+      stats.moneySaved += itemValue;
+      stats.foodSavedKg = +(stats.foodSavedKg + itemWeight).toFixed(1);
+      stats.userPoints += 15;
+      stats.sharedCount += 1;
+
+      pointHistory.unshift({
+        type: 'earn',
+        title: `Membagikan "${name}" (${formatRupiah(itemValue)})`,
+        points: 15,
+        date: 'Baru saja'
+      });
+
+      document.getElementById('share-name').value = '';
+      document.getElementById('share-qty').value = '';
+      document.getElementById('share-condition').value = '';
+      document.getElementById('share-value').value = '';
+      document.getElementById('share-notes').value = '';
+      clearSharePhoto();
+
+      saveRegionalSharedItems();
+      saveState();
+      closeShareModal();
+      updateStatsUI();
+      renderSharedItems();
+      renderProfileHistoryAndRewards();
+
+      if (!isAddressComplete()) {
+        showToast("Bahan berhasil diposting (+15 Poin)! Lengkapi alamat di Profil untuk membuka statistik dampak.");
+      } else {
+        showToast(`Alhamdulillah! Bahan dibagikan (+${formatRupiah(itemValue)} dihemat & +15 Poin).`);
+      }
+    }
+
+    // --- RENDER & LOGIC FEATURE 2: IDE RESEP ---
+    function normalizeIngredientText(text) {
+      return (text || '')
+        .toLowerCase()
+        .replace(/\(.*?\)/g, ' ')
+        .replace(/[^a-z0-9\s/]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function matchSingleIngredient(sourceText, targetText) {
+      const a = normalizeIngredientText(sourceText);
+      const b = normalizeIngredientText(targetText);
+      if (!a || !b) return false;
+      if (a === b || a.includes(b) || b.includes(a)) return true;
+
+      const tokensA = a.split(/[\s/]+/).filter(w => w.length >= 3);
+      const tokensB = b.split(/[\s/]+/).filter(w => w.length >= 3);
+      return tokensA.some(tA => tokensB.some(tB => tA === tB || tA.includes(tB) || tB.includes(tA)));
+    }
+
+    function getAllAvailableKitchenIngredients() {
+      const pantryNames = pantryItems.map(p => p.name);
+      return Array.from(new Set([...selectedIngredients, ...pantryNames]));
+    }
+
+    function isIngredientAvailable(recipeIng) {
+      const availablePool = getAllAvailableKitchenIngredients();
+      return availablePool.some(sel => matchSingleIngredient(sel, recipeIng));
+    }
+
+    function isIngredientExplicitlySelected(recipeIng) {
+      return selectedIngredients.some(sel => matchSingleIngredient(sel, recipeIng));
+    }
+
+    function syncIngredientsFromPantry() {
+      const pantryNames = pantryItems.map(p => p.name);
+      if (pantryNames.length === 0) {
+        showToast("Stok kulkas masih kosong. Tambahkan bahan di tab Kulkas terlebih dahulu.");
+        return;
+      }
+      selectedIngredients = Array.from(new Set([...selectedIngredients, ...pantryNames]));
+      renderCommonIngredients();
+      renderRecipes();
+      showToast(`Berhasil menyinkronkan ${pantryNames.length} bahan dari stok kulkas!`);
+    }
+
+    function setMainIngredientFilter(val) {
+      mainIngredientFilter = (val || '').trim();
+      const inputEl = document.getElementById('main-ingredient-filter');
+      if (inputEl && inputEl.value !== val) {
+        inputEl.value = val;
+      }
+      const clearBtn = document.getElementById('clear-main-filter-btn');
+      if (clearBtn) {
+        if (mainIngredientFilter.length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      }
+      renderRecipes();
+    }
+
+    function clearMainIngredientFilter() {
+      setMainIngredientFilter('');
+    }
+
+    function toggleOnlyMainMatch(checked) {
+      onlyMainMatch = Boolean(checked);
+      renderRecipes();
+    }
+
+    function renderCommonIngredients() {
+      const container = document.getElementById('common-ingredients-list');
+      const resetBtn = document.getElementById('reset-ingredients-btn');
+
+      if (selectedIngredients.length > 0) {
+        resetBtn.classList.remove('hidden');
+        resetBtn.textContent = `Reset Pilihan (${selectedIngredients.length})`;
+      } else {
+        resetBtn.classList.add('hidden');
+      }
+
+      const customOnes = selectedIngredients.filter(i => !COMMON_INGREDIENTS.includes(i));
+      const allChips = [...COMMON_INGREDIENTS, ...customOnes];
+
+      container.innerHTML = allChips.map(ing => {
+        const isSelected = selectedIngredients.includes(ing);
+        return `
+          <button
+            onclick="toggleIngredient('${ing.replace(/'/g, "\\'")}')"
+            class="px-3.5 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              isSelected
+                ? 'bg-[#4A6B5D] text-white shadow-sm'
+                : 'bg-[#FAF7F2] text-[#4A5D53] border border-[#E2DACB] hover:bg-[#F0EAE0]'
+            }"
+          >
+            <i class="fa-solid ${isSelected ? 'fa-circle-check text-[#A3B899]' : 'fa-plus'}"></i>
+            ${ing}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function toggleIngredient(ing) {
+      if (selectedIngredients.includes(ing)) {
+        selectedIngredients = selectedIngredients.filter(i => i !== ing);
+      } else {
+        selectedIngredients.push(ing);
+      }
+      renderCommonIngredients();
+      renderRecipes();
+    }
+
+    function resetSelectedIngredients() {
+      selectedIngredients = [];
+      mainIngredientFilter = '';
+      onlyMainMatch = false;
+      const filterInput = document.getElementById('main-ingredient-filter');
+      if (filterInput) filterInput.value = '';
+      const clearBtn = document.getElementById('clear-main-filter-btn');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      const onlyMainToggle = document.getElementById('only-main-match-toggle');
+      if (onlyMainToggle) onlyMainToggle.checked = false;
+
+      renderCommonIngredients();
+      renderRecipes();
+    }
+
+    function handleAddCustomIngredient(e) {
+      e.preventDefault();
+      const input = document.getElementById('custom-ingredient-input');
+      const val = input.value.trim();
+      if (val && !selectedIngredients.includes(val)) {
+        selectedIngredients.push(val);
+        input.value = '';
+        renderCommonIngredients();
+        renderRecipes();
+      }
+    }
+
+    function renderRecipes() {
+      const heading = document.getElementById('recipe-results-heading');
+      const grid = document.getElementById('recipes-grid');
+
+      const availablePool = getAllAvailableKitchenIngredients();
+      if (availablePool.length === 0 && !mainIngredientFilter) {
+        heading.textContent = "Rekomendasi Resep Anti-Mubazir (0 Cocok)";
+        grid.className = "block";
+        grid.innerHTML = `
+          <div class="bg-white rounded-3xl p-10 text-center border border-[#E6DFD3]">
+            <i class="fa-solid fa-kitchen-set text-4xl text-[#A3B899] mb-3"></i>
+            <h4 class="font-bold text-lg text-[#2C3E35]">Pilih minimal 1 bahan di atas atau isi stok kulkas</h4>
+            <p class="text-sm text-[#64756C] mt-1">Kami akan mencarikan ide masakan rumahan Nusantara & Internasional yang membedakan Bahan Utama dan Bumbu.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const matched = RECIPES_DATABASE
+        .filter(recipe => {
+          if (!mainIngredientFilter) return true;
+          const q = mainIngredientFilter.toLowerCase();
+          return recipe.mainIngredients.some(m => matchSingleIngredient(m, q)) ||
+                 recipe.title.toLowerCase().includes(q);
+        })
+        .map(recipe => {
+          const ownedMain = recipe.mainIngredients.filter(ing => isIngredientAvailable(ing));
+          const missingMain = recipe.mainIngredients.filter(ing => !isIngredientAvailable(ing));
+          const explicitMainHits = recipe.mainIngredients.filter(ing => isIngredientExplicitlySelected(ing)).length;
+
+          const ownedSeasonings = recipe.seasonings.filter(ing => isIngredientAvailable(ing));
+          const missingSeasonings = recipe.seasonings.filter(ing => !isIngredientAvailable(ing));
+          const explicitSeasoningHits = recipe.seasonings.filter(ing => isIngredientExplicitlySelected(ing)).length;
+
+          const mainMatchPct = recipe.mainIngredients.length > 0
+            ? Math.round((ownedMain.length / recipe.mainIngredients.length) * 100)
+            : 100;
+
+          const totalIngredients = recipe.mainIngredients.length + recipe.seasonings.length;
+          const totalOwned = ownedMain.length + ownedSeasonings.length;
+          const matchPercentage = Math.round((totalOwned / totalIngredients) * 100);
+
+          const hasAnyMatch = totalOwned > 0 || Boolean(mainIngredientFilter);
+
+          return {
+            ...recipe,
+            ownedMain,
+            missingMain,
+            explicitMainHits,
+            ownedSeasonings,
+            missingSeasonings,
+            explicitSeasoningHits,
+            mainMatchPct,
+            totalOwned,
+            totalIngredients,
+            matchPercentage,
+            hasAnyMatch
+          };
+        })
+        .filter(r => r.hasAnyMatch && (!onlyMainMatch || r.ownedMain.length > 0))
+        .sort((a, b) => {
+          if (b.explicitMainHits !== a.explicitMainHits) return b.explicitMainHits - a.explicitMainHits;
+          if (b.mainMatchPct !== a.mainMatchPct) return b.mainMatchPct - a.mainMatchPct;
+          if (b.explicitSeasoningHits !== a.explicitSeasoningHits) return b.explicitSeasoningHits - a.explicitSeasoningHits;
+          return b.matchPercentage - a.matchPercentage;
+        });
+
+      heading.textContent = `Rekomendasi Resep Nusantara & Internasional (${matched.length} Cocok)`;
+
+      if (matched.length === 0) {
+        grid.className = "block";
+        grid.innerHTML = `
+          <div class="bg-white rounded-3xl p-10 text-center border border-[#E6DFD3]">
+            <i class="fa-solid fa-magnifying-glass text-4xl text-[#A3B899] mb-3"></i>
+            <h4 class="font-bold text-lg text-[#2C3E35]">Belum ada resep yang cocok dengan filter ini</h4>
+            <p class="text-sm text-[#64756C] mt-1">Coba hapus filter bahan utama atau tambahkan bahan lain seperti Kentang, Tepung Terigu, Telur Ayam, atau Nasi.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.className = "grid grid-cols-1 md:grid-cols-2 gap-5";
+      grid.innerHTML = matched.map(recipe => {
+        const isMainReady = recipe.ownedMain.length === recipe.mainIngredients.length;
+        const originBadgeClass = recipe.origin === 'Internasional'
+          ? 'bg-sky-50 text-sky-700 border-sky-200'
+          : 'bg-amber-50 text-amber-800 border-amber-200';
+
+        const mainChipsHtml = [
+          ...recipe.ownedMain.map(ing => `
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 text-xs font-bold flex items-center gap-1">
+              <i class="fa-solid fa-circle-check text-emerald-600"></i> ${ing}
+            </span>
+          `),
+          ...recipe.missingMain.map(ing => `
+            <span class="px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+              • ${ing}
+            </span>
+          `)
+        ].join('');
+
+        const seasoningChipsHtml = [
+          ...recipe.ownedSeasonings.map(ing => `
+            <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-check text-emerald-600"></i> ${ing}
+            </span>
+          `),
+          ...recipe.missingSeasonings.map(ing => `
+            <span class="px-2 py-0.5 rounded-md bg-white border border-[#E2DACB] text-[#7A8B82] text-[11px]">
+              + ${ing}
+            </span>
+          `)
+        ].join('');
+
+        return `
+          <div class="bg-white rounded-3xl p-6 border border-[#E6DFD3] shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="px-3 py-1 rounded-full text-xs font-extrabold ${
+                    isMainReady ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                  }">
+                    Bahan Utama: ${recipe.ownedMain.length}/${recipe.mainIngredients.length} Tersedia
+                  </span>
+                  <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${originBadgeClass}">
+                    ${recipe.origin || 'Nusantara'}
+                  </span>
+                </div>
+                <span class="text-xs font-semibold text-[#64756C] flex items-center gap-1">
+                  <i class="fa-regular fa-clock theme-text"></i>
+                  ${recipe.cookTime}
+                </span>
+              </div>
+
+              <h4 class="text-xl font-extrabold text-[#2C3E35]">${recipe.title}</h4>
+              <p class="text-sm text-[#64756C] mt-1.5">${recipe.description}</p>
+
+              <div class="mt-4 space-y-3 bg-[#FAF7F2] p-4 rounded-2xl border border-[#EFE9DD]">
+                <div>
+                  <p class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center gap-1">
+                    <i class="fa-solid fa-star text-emerald-600"></i> Bahan Utama (Wajib):
+                  </p>
+                  <div class="flex flex-wrap gap-1.5">${mainChipsHtml}</div>
+                </div>
+
+                <div class="pt-2 border-t border-[#E6DFD3]">
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-[#64756C] mb-1.5">
+                    Bahan Tambahan & Bumbu (${recipe.ownedSeasonings.length}/${recipe.seasonings.length} ada):
+                  </p>
+                  <div class="flex flex-wrap gap-1.5">${seasoningChipsHtml}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-[#EFE9DD] flex items-center justify-between">
+              <span class="text-xs font-semibold text-[#7A8B82]">${recipe.difficulty} • ${recipe.calories}</span>
+              <button
+                onclick="openRecipeModal(${recipe.id})"
+                class="px-4 py-2 bg-[#4A6B5D] hover:bg-[#3A564A] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition cursor-pointer"
+              >
+                Lihat Cara Masak
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openRecipeModal(id) {
+      const recipe = RECIPES_DATABASE.find(r => r.id === id);
+      if (!recipe) return;
+      currentModalRecipe = recipe;
+
+      document.getElementById('recipe-modal-time').textContent = `Resep ${recipe.origin || 'Nusantara'} • ${recipe.cookTime}`;
+      document.getElementById('recipe-modal-title').textContent = recipe.title;
+
+      const mainIngList = document.getElementById('recipe-modal-main-ingredients');
+      mainIngList.innerHTML = recipe.mainIngredients.map(ing => {
+        const hasIt = isIngredientAvailable(ing);
+        return `
+          <li class="text-xs flex items-center gap-2 bg-emerald-50/60 p-2.5 rounded-xl border ${hasIt ? 'border-emerald-300' : 'border-[#EFE9DD]'}">
+            <i class="fa-solid fa-circle-check ${hasIt ? 'text-emerald-600' : 'text-gray-300'} text-sm shrink-0"></i>
+            <span class="${hasIt ? 'font-extrabold text-[#2C3E35]' : 'font-semibold text-[#64756C]'}">${ing}</span>
+          </li>
+        `;
+      }).join('');
+
+      const seasoningList = document.getElementById('recipe-modal-seasonings');
+      seasoningList.innerHTML = recipe.seasonings.map(ing => {
+        const hasIt = isIngredientAvailable(ing);
+        return `
+          <li class="text-xs flex items-center gap-2 bg-[#FAF7F2] p-2.5 rounded-xl border border-[#EFE9DD]">
+            <i class="fa-solid fa-circle-check ${hasIt ? 'text-emerald-600' : 'text-gray-300'} text-sm shrink-0"></i>
+            <span class="${hasIt ? 'font-bold text-[#2C3E35]' : 'text-[#64756C]'}">${ing}</span>
+          </li>
+        `;
+      }).join('');
+
+      const stepsList = document.getElementById('recipe-modal-steps');
+      stepsList.innerHTML = recipe.steps.map((step, idx) => `
+        <li class="flex gap-3 text-sm text-[#4A5D53]">
+          <span class="w-6 h-6 rounded-full bg-[#4A6B5D] text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+            ${idx + 1}
+          </span>
+          <p class="leading-relaxed">${step}</p>
+        </li>
+      `).join('');
+
+      const modal = document.getElementById('recipe-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeRecipeModal() {
+      const modal = document.getElementById('recipe-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function claimRecipePoints() {
+      const recipeTitle = currentModalRecipe ? currentModalRecipe.title : "Resep Kulkas";
+      stats.moneySaved += 18000;
+      stats.foodSavedKg = +(stats.foodSavedKg + 0.4).toFixed(1);
+      stats.userPoints += 15;
+
+      pointHistory.unshift({
+        type: 'earn',
+        title: `Memasak "${recipeTitle}" (+Rp 18.000 dihemat)`,
+        points: 15,
+        date: 'Baru saja'
+      });
+
+      saveState();
+      closeRecipeModal();
+      updateStatsUI();
+      renderProfileHistoryAndRewards();
+      showToast("Selamat memasak! (+Rp 18.000 dihemat & +15 Poin Penyelamat Pangan)");
+    }
+
+    // --- RENDER & LOGIC FEATURE 3: SMART PANTRY (KULKAS) ---
+    function handleAddPantryItem(e) {
+      e.preventDefault();
+      const name = document.getElementById('pantry-name').value.trim();
+      const qty = document.getElementById('pantry-qty').value.trim();
+      const cat = document.getElementById('pantry-cat').value;
+      const days = parseInt(document.getElementById('pantry-days').value, 10);
+
+      const rawVal = parseInt(document.getElementById('pantry-value').value, 10);
+      const val = (!isNaN(rawVal) && rawVal > 0) ? rawVal : 10000;
+      const weight = parseFloat(document.getElementById('pantry-weight').value) || 0.5;
+
+      if (!name || !qty) return;
+
+      pantryItems.unshift({
+        id: Date.now(),
+        name,
+        quantity: qty,
+        category: cat,
+        daysLeft: days,
+        addedDate: "Hari ini",
+        value: val,
+        weight: weight
+      });
+
+      document.getElementById('pantry-name').value = '';
+      document.getElementById('pantry-qty').value = '';
+      document.getElementById('pantry-value').value = '';
+
+      saveState();
+      updateStatsUI();
+      renderPantryItems();
+      renderRecipes();
+      showToast(`${name} berhasil dicatat ke dalam isi kulkas.`);
+    }
+
+    function renderPantryItems() {
+      const countLabel = document.getElementById('pantry-count-label');
+      const listContainer = document.getElementById('pantry-items-list');
+
+      countLabel.textContent = `Stok Kulkas Anda (${pantryItems.length} Bahan)`;
+
+      const sorted = [...pantryItems].sort((a, b) => a.daysLeft - b.daysLeft);
+
+      listContainer.innerHTML = sorted.map(item => {
+        let borderClass = 'border-emerald-200 bg-white';
+        let badgeClass = 'bg-emerald-100 text-emerald-800';
+        let labelText = `Segar (${item.daysLeft} hari lagi)`;
+        let iconClass = 'fa-circle-check text-emerald-600';
+
+        if (item.daysLeft === 0) {
+          borderClass = 'border-rose-300 bg-rose-50/40';
+          badgeClass = 'bg-rose-100 text-rose-800';
+          labelText = 'Hari Terakhir! Segera Olah/Bagikan';
+          iconClass = 'fa-fire text-rose-600';
+        } else if (item.daysLeft <= 2) {
+          borderClass = 'border-amber-300 bg-amber-50/40';
+          badgeClass = 'bg-amber-100 text-amber-800';
+          labelText = `Segera Olah (${item.daysLeft} hari lagi)`;
+          iconClass = 'fa-triangle-exclamation text-amber-600';
+        }
+
+        const itemVal = item.value || 10000;
+
+        return `
+          <div class="p-4 rounded-2xl border ${borderClass} shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <i class="fa-solid ${iconClass}"></i>
+                <h4 class="font-extrabold text-[#2C3E35] text-base">${item.name}</h4>
+                <span class="text-xs font-semibold text-[#64756C]">• ${item.quantity} (${formatRupiah(itemVal)})</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${badgeClass}">
+                  ${labelText}
+                </span>
+                <span class="text-xs text-[#7A8B82]">Dicatat: ${item.addedDate}</span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                onclick="movePantryToRecipe(${item.id})"
+                class="px-3 py-2 rounded-xl bg-[#E8EFEA] hover:bg-[#DCE7DF] text-[#4A6B5D] text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-kitchen-set"></i>
+                Cari Resep
+              </button>
+              <button
+                onclick="movePantryToShare(${item.id})"
+                class="px-3 py-2 rounded-xl theme-btn-soft border text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-hand-holding-heart"></i>
+                Bagikan
+              </button>
+              <button
+                onclick="handleMarkPantryCooked(${item.id})"
+                class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+              >
+                <i class="fa-solid fa-check"></i>
+                Sudah Dimasak
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function movePantryToRecipe(id) {
+      const item = pantryItems.find(i => i.id === id);
+      if (!item) return;
+      if (!selectedIngredients.includes(item.name)) {
+        selectedIngredients.push(item.name);
+      }
+      renderCommonIngredients();
+      renderRecipes();
+      switchTab('resep');
+      showToast(`Mencari resep yang menggunakan "${item.name}"...`);
+    }
+
+    function movePantryToShare(id) {
+      const item = pantryItems.find(i => i.id === id);
+      if (!item) return;
+      document.getElementById('share-name').value = item.name;
+      document.getElementById('share-qty').value = item.quantity;
+      document.getElementById('share-cat').value = (item.category === 'Protein') ? 'Lauk Pauk' : (item.category === 'Karbohidrat' ? 'Makanan Matang' : 'Sayuran');
+      document.getElementById('share-condition').value = item.daysLeft === 0 ? 'Masih segar, sebaiknya diolah hari ini' : `Masih segar, tahan ${item.daysLeft} hari di kulkas`;
+      document.getElementById('share-value').value = item.value || 10000;
+      document.getElementById('share-weight').value = String(item.weight || 0.5);
+      document.getElementById('share-freshness').value = item.daysLeft === 0 ? 'Harus diolah hari ini!' : `Tahan ${item.daysLeft} hari lagi`;
+      document.getElementById('share-notes').value = 'Dari stok kulkas pribadi, masih bagus daripada tidak terpakai.';
+
+      switchTab('berbagi');
+      openShareModal();
+    }
+
+    function handleMarkPantryCooked(id) {
+      const item = pantryItems.find(i => i.id === id);
+      if (!item) return;
+
+      const savedVal = item.value || 10000;
+      const savedWt = item.weight || 0.4;
+
+      pantryItems = pantryItems.filter(i => i.id !== id);
+      stats.moneySaved += savedVal;
+      stats.foodSavedKg = +(stats.foodSavedKg + savedWt).toFixed(1);
+      stats.userPoints += 10;
+
+      pointHistory.unshift({
+        type: 'earn',
+        title: `Mengolah "${item.name}" dari kulkas (+${formatRupiah(savedVal)})`,
+        points: 10,
+        date: 'Baru saja'
+      });
+
+      saveState();
+      updateStatsUI();
+      renderPantryItems();
+      renderProfileHistoryAndRewards();
+      showToast(`Hebat! "${item.name}" berhasil diolah (+${formatRupiah(savedVal)} & +10 Poin).`);
+    }
+
+    // --- RENDER & LOGIC FEATURE 4: PENUKARAN POIN KEBAIKAN & DOMPET VOUCHER ---
+    function renderProfileHistoryAndRewards() {
+      const rewardsGrid = document.getElementById('rewards-grid');
+      rewardsGrid.innerHTML = REWARDS_CATALOG.map(reward => {
+        const canAfford = stats.userPoints >= reward.cost;
+        return `
+          <div class="p-4 rounded-2xl border border-[#E6DFD3] bg-[#FAF7F2]/60 flex flex-col justify-between gap-4">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="theme-soft-bg theme-text w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0">
+                  <i class="fa-solid ${reward.icon}"></i>
+                </div>
+                <span class="theme-badge-bg px-3 py-1 rounded-full text-xs font-extrabold">
+                  ${reward.cost} Poin
+                </span>
+              </div>
+              <h4 class="font-extrabold text-[#2C3E35] text-base leading-snug">${reward.title}</h4>
+              <p class="text-xs font-bold theme-text mt-0.5">${reward.partner}</p>
+              <p class="text-xs text-[#64756C] mt-2 leading-relaxed">${reward.desc}</p>
+            </div>
+
+            <button
+              onclick="redeemReward(${reward.id})"
+              ${!canAfford ? 'disabled' : ''}
+              class="w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition ${
+                canAfford
+                  ? 'theme-btn-main shadow-sm cursor-pointer'
+                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              }"
+            >
+              <i class="fa-solid ${canAfford ? 'fa-gift' : 'fa-lock'}"></i>
+              ${canAfford ? 'Tukar Poin Sekarang' : `Kurang ${reward.cost - stats.userPoints} Poin`}
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      renderMyVouchers();
+
+      const historyList = document.getElementById('point-history-list');
+      if (pointHistory.length === 0) {
+        historyList.innerHTML = `
+          <div class="text-center py-6 bg-[#FAF7F2] rounded-2xl border border-dashed border-[#DCD3C4] text-xs text-[#64756C]">
+            Belum ada riwayat poin. Mulailah berbagi bahan makanan atau mengolah stok kulkas untuk mendapatkan poin pertama Anda!
+          </div>
+        `;
+      } else {
+        historyList.innerHTML = pointHistory.map(h => {
+          const isEarn = h.type === 'earn';
+          return `
+            <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-[#FAF7F2] border border-[#EFE9DD]">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs shrink-0 ${
+                  isEarn ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                }">
+                  <i class="fa-solid ${isEarn ? 'fa-arrow-up' : 'fa-ticket'}"></i>
+                </div>
+                <div>
+                  <p class="text-xs sm:text-sm font-bold text-[#2C3E35]">${h.title}</p>
+                  <p class="text-[11px] text-[#7A8B82]">${h.date}</p>
+                </div>
+              </div>
+              <span class="text-xs sm:text-sm font-extrabold shrink-0 ${
+                isEarn ? 'text-emerald-600' : 'text-amber-600'
+              }">
+                ${isEarn ? '+' : '-'}${h.points} Poin
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function generateVoucherCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let randomPart = '';
+      for (let i = 0; i < 4; i++) {
+        randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `DB-TRG-${randomPart}`;
+    }
+
+    function redeemReward(id) {
+      const reward = REWARDS_CATALOG.find(r => r.id === id);
+      if (!reward) return;
+
+      if (stats.userPoints < reward.cost) {
+        showToast("Maaf, Poin Kebaikan Anda belum mencukupi untuk hadiah ini.");
+        return;
+      }
+
+      const uniqueCode = generateVoucherCode();
+      const holderName = isAddressComplete() ? userProfile.name : "Warga DapurBerbagi";
+      const holderRegion = isAddressComplete() ? `${userProfile.rtrw}, ${userProfile.desa}` : "Wilayah Belum Diatur";
+
+      stats.userPoints -= reward.cost;
+      stats.redeemedCount += 1;
+
+      myVouchers.unshift({
+        code: uniqueCode,
+        title: reward.title,
+        partner: reward.partner,
+        nominalRp: reward.nominalRp,
+        holderName: holderName,
+        holderRegion: holderRegion,
+        status: 'Aktif',
+        createdAt: 'Baru saja',
+        verifiedAt: null
+      });
+
+      pointHistory.unshift({
+        type: 'spend',
+        title: `Penukaran "${reward.title}" (Kode: ${uniqueCode})`,
+        points: reward.cost,
+        date: 'Baru saja'
+      });
+
+      saveState();
+      updateStatsUI();
+      renderProfileHistoryAndRewards();
+      renderMitraDashboard();
+      showToast(`Selamat! Kode Voucher Anda: ${uniqueCode}. Tunjukkan ke warung mitra.`);
+    }
+
+    function renderMyVouchers() {
+      const container = document.getElementById('my-vouchers-list');
+      if (!container) return;
+
+      if (myVouchers.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-6 px-4 bg-[#FAF7F2] rounded-2xl border border-dashed border-[#DCD3C4] text-xs text-[#64756C]">
+            Dompet voucher masih kosong. Kumpulkan Poin Kebaikan lalu tukarkan pada katalog di atas untuk mendapatkan kode voucher unik!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = myVouchers.map(v => {
+        const isUsed = v.status === 'Sudah Digunakan';
+        return `
+          <div class="p-4 rounded-2xl border ${isUsed ? 'border-gray-200 bg-gray-50/70 opacity-75' : 'theme-border bg-[#FAF7F2]'} flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${
+                  isUsed ? 'bg-gray-200 text-gray-700' : 'bg-emerald-100 text-emerald-800'
+                }">
+                  ${isUsed ? 'Sudah Digunakan' : 'Aktif • Siap Pakai'}
+                </span>
+                <span class="text-xs font-extrabold text-[#2C3E35]">${formatRupiah(v.nominalRp)}</span>
+              </div>
+              <h4 class="font-extrabold text-sm text-[#2C3E35]">${v.title}</h4>
+              <p class="text-[11px] text-[#64756C] mt-0.5">${v.partner}</p>
+            </div>
+
+            <div class="bg-white px-3 py-2.5 rounded-xl border border-dashed border-[#DCD3C4] flex items-center justify-between gap-2">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-[#7A8B82] block">Kode Voucher Unik</span>
+                <span class="font-mono font-extrabold text-sm tracking-wider ${isUsed ? 'line-through text-gray-400' : 'theme-text'}">${v.code}</span>
+              </div>
+              <button
+                type="button"
+                onclick="copyVoucherCode('${v.code}')"
+                class="px-2.5 py-1.5 min-h-0 rounded-lg bg-[#F4F0E8] hover:bg-[#EAE3D5] text-[#2C3E35] text-xs font-bold flex items-center gap-1 cursor-pointer"
+                title="Salin Kode Voucher"
+              >
+                <i class="fa-regular fa-copy"></i>
+                Salin
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function copyVoucherCode(code) {
+      const tempInput = document.createElement('input');
+      tempInput.value = code;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast(`Kode voucher ${code} berhasil disalin!`);
+      } catch (err) {
+        showToast(`Kode voucher Anda: ${code}`);
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // --- LOGIN KHUSUS MITRA UMKM & ADMIN KELURAHAN ---
+    function openMitraLoginModal() {
+      const modal = document.getElementById('mitra-login-modal');
+      const errEl = document.getElementById('mitra-login-error');
+      document.getElementById('mitra-id-input').value = '';
+      document.getElementById('mitra-pin-input').value = '';
+      if (errEl) errEl.classList.add('hidden');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeMitraLoginModal() {
+      const modal = document.getElementById('mitra-login-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleMitraLogin(e) {
+      e.preventDefault();
+      const enteredId = document.getElementById('mitra-id-input').value.trim().toUpperCase();
+      const enteredPin = document.getElementById('mitra-pin-input').value.trim();
+      const errEl = document.getElementById('mitra-login-error');
+
+      if (enteredId === MITRA_CREDENTIALS.id && enteredPin === MITRA_CREDENTIALS.pin) {
+        isMitraMode = true;
+        closeMitraLoginModal();
+
+        document.getElementById('mitra-mode-bar').classList.remove('hidden');
+        document.getElementById('main-nav-wrapper').classList.add('hidden');
+        document.getElementById('header-impact-bar').classList.add('hidden');
+
+        ['berbagi', 'resep', 'kulkas', 'profil'].forEach(t => {
+          document.getElementById(`view-${t}`).classList.add('hidden');
+        });
+        document.getElementById('section-mitra').classList.remove('hidden');
+
+        checkSplashScreen();
+        renderMitraDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast("Berhasil masuk ke Portal Mitra UMKM & Admin Kelurahan.");
+      } else {
+        if (errEl) errEl.classList.remove('hidden');
+        showToast("Akses ditolak: ID Mitra atau Kata Sandi Rahasia salah.");
+      }
+    }
+
+    function exitMitraMode() {
+      isMitraMode = false;
+      document.getElementById('mitra-mode-bar').classList.add('hidden');
+      document.getElementById('main-nav-wrapper').classList.remove('hidden');
+      document.getElementById('header-impact-bar').classList.remove('hidden');
+      document.getElementById('section-mitra').classList.add('hidden');
+
+      switchTab('berbagi');
+      checkSplashScreen();
+      showToast("Keluar dari Portal Mitra. Kembali ke tampilan warga.");
+    }
+
+    // --- RENDER & LOGIC PORTAL MITRA UMKM & KELURAHAN (REIMBURSE & VALIDASI) ---
+    function handleVerifyVoucher(e) {
+      e.preventDefault();
+      const inputEl = document.getElementById('verify-voucher-input');
+      const code = inputEl.value.trim().toUpperCase();
+      if (!code) return;
+
+      const voucher = myVouchers.find(v => v.code.toUpperCase() === code);
+      if (!voucher) {
+        showToast(`Kode voucher "${code}" tidak ditemukan dalam sistem.`);
+        return;
+      }
+
+      if (voucher.status === 'Sudah Digunakan') {
+        showToast(`Peringatan: Voucher ${code} sudah pernah digunakan sebelumnya!`);
+        return;
+      }
+
+      voucher.status = 'Sudah Digunakan';
+      voucher.verifiedAt = 'Hari ini (Terverifikasi Mitra)';
+      inputEl.value = '';
+
+      saveState();
+      renderMyVouchers();
+      renderMitraDashboard();
+      showToast(`Sukses! Voucher ${code} (${formatRupiah(voucher.nominalRp)}) sah & masuk rekap tagihan Kelurahan.`);
+    }
+
+    function renderMitraDashboard() {
+      const verifiedVouchers = myVouchers.filter(v => v.status === 'Sudah Digunakan');
+      const activeVouchers = myVouchers.filter(v => v.status === 'Aktif');
+      const totalReimburse = verifiedVouchers.reduce((sum, v) => sum + (v.nominalRp || 0), 0);
+
+      const totalEl = document.getElementById('mitra-total-reimburse');
+      const verifiedCountEl = document.getElementById('mitra-verified-count');
+      const activeCountEl = document.getElementById('mitra-active-count');
+      const listEl = document.getElementById('mitra-reimburse-list');
+
+      if (totalEl) totalEl.textContent = formatRupiah(totalReimburse);
+      if (verifiedCountEl) verifiedCountEl.textContent = `${verifiedVouchers.length} Voucher`;
+      if (activeCountEl) activeCountEl.textContent = `${activeVouchers.length} Voucher`;
+
+      if (!listEl) return;
+
+      if (myVouchers.length === 0) {
+        listEl.innerHTML = `
+          <div class="text-center py-8 px-4 bg-[#FAF7F2] rounded-2xl border border-dashed border-[#DCD3C4] text-xs text-[#64756C]">
+            Belum ada transaksi penukaran voucher warga. Data akan otomatis muncul di sini saat warga menukarkan poin menjadi voucher.
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = myVouchers.map(v => {
+        const isVerified = v.status === 'Sudah Digunakan';
+        return `
+          <div class="p-4 rounded-2xl border border-[#EFE9DD] bg-[#FAF7F2] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-mono font-extrabold text-sm text-[#2C3E35] bg-white px-2.5 py-0.5 rounded-lg border border-[#DCD3C4]">
+                  ${v.code}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                  isVerified ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                }">
+                  ${isVerified ? 'Siap Cair (Reimburse DLH)' : 'Menunggu Penukaran di Warung'}
+                </span>
+              </div>
+              <p class="text-sm font-extrabold text-[#2C3E35]">${v.title} • <span class="theme-text">${formatRupiah(v.nominalRp)}</span></p>
+              <p class="text-xs text-[#64756C]">Warga: <strong>${v.holderName}</strong> (${v.holderRegion}) • Mitra: ${v.partner}</p>
+            </div>
+
+            <div class="shrink-0">
+              ${
+                isVerified
+                  ? `<span class="text-xs font-bold text-emerald-700 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> ${v.verifiedAt || 'Terverifikasi'}</span>`
+                  : `<button type="button" onclick="quickFillVerifyCode('${v.code}')" class="px-3 py-1.5 min-h-0 rounded-xl theme-btn-soft border text-xs font-bold cursor-pointer">Pilih Kode</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function quickFillVerifyCode(code) {
+      const inputEl = document.getElementById('verify-voucher-input');
+      if (inputEl) {
+        inputEl.value = code;
+        inputEl.focus();
+      }
+    }
+
+    // --- MODAL PENJELASAN PERHITUNGAN DAMPAK ---
+    function openImpactInfoModal(type) {
+      const modal = document.getElementById('impact-info-modal');
+      const titleEl = document.getElementById('impact-modal-title');
+      const bodyEl = document.getElementById('impact-modal-body');
+
+      if (type === 'money') {
+        titleEl.innerHTML = `<i class="fa-solid fa-coins theme-text"></i> Estimasi Uang Belanja Dihemat`;
+        bodyEl.innerHTML = `
+          <p><strong>Prinsip Zero-State (Mulai dari Rp 0):</strong></p>
+          <p>Angka penghematan Anda dimulai dari <strong>Rp 0</strong> dan baru terbuka setelah Anda masuk serta melengkapi alamat lengkap (Kabupaten, Kecamatan, Desa/Kelurahan, dan RT/RW).</p>
+          <ul class="list-disc pl-5 space-y-1.5 text-xs">
+            <li><strong>Membagikan Bahan ke Tetangga:</strong> Dihitung sesuai nominal nilai bahan yang Anda masukkan (atau default Rp 10.000).</li>
+            <li><strong>Mengolah Stok Kulkas:</strong> Dihitung sesuai nilai bahan yang berhasil dimasak sebelum kedaluwarsa.</li>
+            <li><strong>Memasak Resep Kulkas:</strong> Menambah estimasi penghematan Rp 18.000 per resep.</li>
+          </ul>
+        `;
+      } else {
+        titleEl.innerHTML = `<i class="fa-solid fa-scale-balanced text-[#4A6B5D]"></i> Pangan Terselamatkan Warga`;
+        bodyEl.innerHTML = `
+          <p><strong>Prinsip Zero-State (Mulai dari 0 Kg):</strong></p>
+          <p>Total berat pangan terselamatkan dimulai dari <strong>0 Kg</strong> dan meningkat nyata berdasarkan aktivitas Anda menyelamatkan makanan:</p>
+          <ul class="list-disc pl-5 space-y-1.5 text-xs">
+            <li><strong>Ringan (bumbu, sisa porsi kecil):</strong> ~0,25 Kg</li>
+            <li><strong>Sedang (1 ikat sayur, tahu/tempe):</strong> ~0,5 Kg</li>
+            <li><strong>Berat (paket lauk/buah):</strong> ~1,0 Kg</li>
+          </ul>
+        `;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeImpactInfoModal() {
+      const modal = document.getElementById('impact-info-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Close modals when clicking outside
+    ['share-modal', 'recipe-modal', 'impact-info-modal', 'mitra-login-modal', 'about-web-modal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.classList.add('hidden');
+            this.classList.remove('flex');
+          }
+        });
+      }
+    });
+
+    // --- INITIALIZE APPLICATION ---
+    window.onload = function() {
+      initRegionDropdowns('splash');
+      initRegionDropdowns('login');
+      loadState();
+      applyTheme(currentTheme);
+      updateProfileUI();
+      checkSplashScreen();
+      renderCategoryFilters();
+      renderSharedItems();
+      renderCommonIngredients();
+      renderRecipes();
+      renderPantryItems();
+      renderProfileHistoryAndRewards();
+      renderMitraDashboard();
+    };
+  </script>
+</body>
+</html>
